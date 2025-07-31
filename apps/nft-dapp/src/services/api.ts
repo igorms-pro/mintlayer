@@ -1,6 +1,7 @@
-import type { NFT } from '../types/nft';
+import type { NFT } from '@/types/nft';
+import { ENV_CONFIG } from '@/config/env';
 
-const API_BASE_URL = 'https://mint-api-production-7d50.up.railway.app';
+const API_BASE_URL = ENV_CONFIG.API_BASE_URL;
 
 export const api = {
   async getNFTs(): Promise<NFT[]> {

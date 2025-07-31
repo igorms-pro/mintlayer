@@ -8,8 +8,8 @@
     "build": "pnpm --filter nft-dapp build",
     "preview": "pnpm --filter nft-dapp preview",
     "lint": "pnpm --filter nft-dapp lint",
-    "test": "pnpm --filter blockchain test",
-    "test:watch": "pnpm --filter blockchain test:watch",
+    "test": "pnpm --filter nft-dapp test:run",
+    "test:watch": "pnpm --filter nft-dapp test",
     "clean": "pnpm -r exec rm -rf node_modules dist .turbo",
     "install:all": "pnpm install",
     "prepare": "husky"
@@ -23,5 +23,5 @@
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@8.0.0"
+  "packageManager": "pnpm@9.15.1"
 }

@@ -1,6 +1,12 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 
+// Mock environment variables for tests
+vi.stubEnv('VITE_REOWN_PROJECT_ID', 'test-project-id')
+vi.stubEnv('VITE_API_BASE_URL', 'https://test-api.example.com')
+vi.stubEnv('VITE_NFT_CONTRACT_ADDRESS', '0x1234567890123456789012345678901234567890')
+vi.stubEnv('VITE_ENV', 'test')
+
 // Mock fetch globally
 global.fetch = vi.fn()
 
@@ -20,6 +26,22 @@ vi.mock('wagmi', () => ({
   useDisconnect: () => ({
     disconnect: vi.fn(),
   }),
+  useReadContract: () => ({
+    data: BigInt(0),
+    isLoading: false,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+  }),
+  useWriteContract: () => ({
+    writeContractAsync: vi.fn(),
+  }),
+  useWaitForTransactionReceipt: () => ({
+    data: null,
+    isLoading: false,
+    isError: false,
+    error: null,
+  }),
   createConfig: vi.fn(),
   http: vi.fn(),
   injected: vi.fn(),
@@ -34,7 +56,20 @@ vi.mock('viem', () => ({
 
 // Mock TanStack Query
 vi.mock('@tanstack/react-query', () => ({
-  useQuery: vi.fn(),
+  useQuery: vi.fn(() => ({
+    data: undefined,
+    isLoading: false,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+    isRefetching: false,
+  })),
+  useQueryClient: vi.fn(() => ({
+    invalidateQueries: vi.fn(),
+    setQueryData: vi.fn(),
+    getQueryData: vi.fn(),
+    refetchQueries: vi.fn(),
+  })),
   QueryClient: vi.fn(),
   QueryClientProvider: ({ children }: { children: React.ReactNode }) => children,
 })) 
