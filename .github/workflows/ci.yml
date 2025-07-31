@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
@@ -7,40 +7,54 @@ on:
     branches: [main]
 
 jobs:
-  build-and-test:
+  test:
+    name: Test & Build
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'pnpm'
 
-      - name: Install pnpm
+      - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9.15.1
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
         run: pnpm --filter nft-dapp exec playwright install --with-deps
 
-      - name: Lint
+      - name: Lint code
         run: pnpm --filter nft-dapp lint
 
       - name: Type check
         run: pnpm --filter nft-dapp type-check
 
-      - name: Run unit/integration tests
-        run: pnpm --filter nft-dapp test
+      - name: Run unit & integration tests
+        run: pnpm --filter nft-dapp test:run
 
       - name: Run E2E tests
         run: pnpm --filter nft-dapp playwright:test
 
-      - name: Build app
-        run: pnpm --filter nft-dapp build 
+      - name: Build application
+        run: pnpm --filter nft-dapp build
+        env:
+          VITE_REOWN_PROJECT_ID: ${{ secrets.VITE_REOWN_PROJECT_ID }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_NFT_CONTRACT_ADDRESS: ${{ secrets.VITE_NFT_CONTRACT_ADDRESS }}
+          VITE_ENV: production
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: apps/nft-dapp/dist/
+          retention-days: 7 

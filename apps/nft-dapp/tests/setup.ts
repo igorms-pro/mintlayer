@@ -1,6 +1,12 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 
+// Mock environment variables for tests
+vi.stubEnv('VITE_REOWN_PROJECT_ID', 'test-project-id')
+vi.stubEnv('VITE_API_BASE_URL', 'https://test-api.example.com')
+vi.stubEnv('VITE_NFT_CONTRACT_ADDRESS', '0x1234567890123456789012345678901234567890')
+vi.stubEnv('VITE_ENV', 'test')
+
 // Mock fetch globally
 global.fetch = vi.fn()
 
