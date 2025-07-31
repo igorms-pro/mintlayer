@@ -20,6 +20,22 @@ vi.mock('wagmi', () => ({
   useDisconnect: () => ({
     disconnect: vi.fn(),
   }),
+  useReadContract: () => ({
+    data: BigInt(0),
+    isLoading: false,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+  }),
+  useWriteContract: () => ({
+    writeContractAsync: vi.fn(),
+  }),
+  useWaitForTransactionReceipt: () => ({
+    data: null,
+    isLoading: false,
+    isError: false,
+    error: null,
+  }),
   createConfig: vi.fn(),
   http: vi.fn(),
   injected: vi.fn(),

@@ -1,13 +1,9 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { 
   useAccount, 
-  useBalance, 
-  useConnect, 
-  useDisconnect,
   useWaitForTransactionReceipt,
   useWriteContract
 } from 'wagmi';
-import { formatEther } from 'viem';
 import { baseSepolia } from 'wagmi/chains';
 import type { NFT } from '../types/nft';
 import type { 
@@ -23,8 +19,8 @@ import {
 } from '../config/contracts';
 
 /**
- * Comprehensive Web3 hook for wallet management and NFT minting
- * Implements proper error handling, transaction tracking, and user feedback
+ * Simplified Web3 hook focused on NFT minting
+ * RainbowKit handles wallet connection, balance, and chain switching
  */
 export const useWeb3 = (): UseWeb3Return => {
   const [mintState, setMintState] = useState<MintState>({
@@ -35,82 +31,11 @@ export const useWeb3 = (): UseWeb3Return => {
     error: null,
   });
 
-  // Wagmi hooks
+  // Wagmi hooks - only what we need for minting
   const { address, isConnected, chain } = useAccount();
-  const { connect: wagmiConnect, connectors, isPending: isConnecting } = useConnect();
-  const { disconnect: wagmiDisconnect, isPending: isDisconnecting } = useDisconnect();
-  
-  const { 
-    data: balanceData, 
-    isLoading: isBalanceLoading,
-    refetch: refetchBalance 
-  } = useBalance({
-    address,
-    chainId: baseSepolia.id,
-  });
-
   const { writeContractAsync } = useWriteContract();
 
-  // Chain validation
-  const isCorrectChain = useMemo(() => {
-    return chain?.id === baseSepolia.id;
-  }, [chain]);
-
-  // Connection handlers
-  const connect = useCallback(() => {
-    try {
-      const injectedConnector = connectors.find(
-        (connector) => connector.type === 'injected'
-      );
-      
-      if (!injectedConnector) {
-        throw new Error('No wallet extension found. Please install MetaMask or another Web3 wallet.');
-      }
-      
-      wagmiConnect({ connector: injectedConnector });
-    } catch (error) {
-      console.error('Connection error:', error);
-      setMintState(prev => ({
-        ...prev,
-        isError: true,
-        error: error instanceof Error ? error : new Error('Failed to connect wallet'),
-      }));
-    }
-  }, [connectors, wagmiConnect]);
-
-  const disconnect = useCallback(() => {
-    wagmiDisconnect();
-    // resetMintState will be defined later
-  }, [wagmiDisconnect]);
-
-  // Chain switching ?
-  const switchToBaseSepolia = useCallback(async () => {
-    try {
-      await window.ethereum?.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: `0x${baseSepolia.id.toString(16)}` }],
-      });
-    } catch (error) {
-      console.error('Failed to switch chain:', error);
-      // If chain doesn't exist, add it
-      if ((error as { code?: number })?.code === 4902) {
-        try {
-          await window.ethereum?.request({
-            method: 'wallet_addEthereumChain',
-            params: [{
-              chainId: `0x${baseSepolia.id.toString(16)}`,
-              chainName: baseSepolia.name,
-              rpcUrls: [baseSepolia.rpcUrls.default.http[0]],
-              nativeCurrency: baseSepolia.nativeCurrency,
-              blockExplorerUrls: [baseSepolia.blockExplorers.default.url],
-            }],
-          });
-        } catch (addError) {
-          console.error('Failed to add chain:', addError);
-        }
-      }
-    }
-  }, []);
+  const isCorrectChain = chain?.id === baseSepolia.id;
 
   // Claim logic (real contract interaction)
   const mint = useCallback(async (nft: NFT) => {
@@ -154,9 +79,6 @@ export const useWeb3 = (): UseWeb3Return => {
         txHash,
       });
 
-      // Refetch balance after successful claim
-      await refetchBalance();
-
     } catch (error) {
       console.error('Claim error:', error);
       setMintState({
@@ -167,7 +89,7 @@ export const useWeb3 = (): UseWeb3Return => {
         error: error instanceof Error ? error : new Error('Failed to claim NFT'),
       });
     }
-  }, [isConnected, address, isCorrectChain, writeContractAsync, refetchBalance]);
+  }, [isConnected, address, isCorrectChain, writeContractAsync]);
 
   const resetMintState = useCallback(() => {
     setMintState({
@@ -180,19 +102,9 @@ export const useWeb3 = (): UseWeb3Return => {
   }, []);
 
   return {
-    // Account state
+    // Account state (read-only for RainbowKit)
     address,
     isConnected,
-    isConnecting,
-    isDisconnecting,
-    
-    // Balance
-    balance: balanceData ? formatEther(balanceData.value) : undefined,
-    isBalanceLoading,
-    
-    // Connection actions
-    connect,
-    disconnect,
     
     // Minting
     mintState,
@@ -201,13 +113,11 @@ export const useWeb3 = (): UseWeb3Return => {
     
     // Chain validation
     isCorrectChain,
-    switchToBaseSepolia,
   };
 };
 
 /**
  * Hook for transaction status tracking
- * Provides real-time transaction confirmation status
  */
 export const useTransactionStatus = (txHash: string | undefined): UseTransactionStatusReturn => {
   const { data, isLoading, isError, error } = useWaitForTransactionReceipt({

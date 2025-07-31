@@ -40,19 +40,9 @@ export interface MintState {
 }
 
 export interface UseWeb3Return {
-  // Account state
+  // Account state (read-only for RainbowKit)
   address: string | undefined;
   isConnected: boolean;
-  isConnecting: boolean;
-  isDisconnecting: boolean;
-  
-  // Balance
-  balance: string | undefined;
-  isBalanceLoading: boolean;
-  
-  // Connection actions
-  connect: () => void;
-  disconnect: () => void;
   
   // Minting state
   mintState: MintState;
@@ -61,7 +51,6 @@ export interface UseWeb3Return {
   
   // Chain validation
   isCorrectChain: boolean;
-  switchToBaseSepolia: () => void;
 }
 
 export interface UseTransactionStatusReturn {
@@ -71,6 +60,59 @@ export interface UseTransactionStatusReturn {
   isError: boolean;
   error: Error | null;
   confirmations: number;
+}
+
+// useNFTBalance hook types
+export interface UseNFTBalanceReturn {
+  balance: number;
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+  refetch: () => void;
+}
+
+// useClaimStatus hook types
+export interface ClaimCondition {
+  startTimestamp: number;
+  maxClaimableSupply: number;
+  supplyClaimed: number;
+  quantityLimitPerWallet: number;
+  currency: string;
+  pricePerToken: bigint;
+  allowlistMerkleRoot: string;
+}
+
+export interface ClaimError {
+  type: 'NETWORK' | 'CONTRACT' | 'VALIDATION' | 'USER_LIMIT';
+  message: string;
+  code?: number;
+  details?: string;
+}
+
+export interface UseClaimStatusReturn {
+  // Claim availability
+  canClaim: boolean;
+  canClaimReason: string | null;
+  
+  // Claim conditions
+  claimCondition: ClaimCondition | null;
+  activeConditionId: number | null;
+  
+  // User-specific validation
+  userBalance: number;
+  hasReachedLimit: boolean;
+  remainingClaims: number;
+  
+  // Loading states
+  isLoading: boolean;
+  isConditionIdLoading: boolean;
+  isConditionLoading: boolean;
+  
+  // Error states
+  isError: boolean;
+  isConditionIdError: boolean;
+  isConditionError: boolean;
+  error: ClaimError | null;
 }
 
 // Query Cache Types

@@ -15,6 +15,10 @@ export const CACHE_TIMES = {
   // Static content (user profiles, metadata)
   STATIC_STALE_TIME: 10 * 60 * 1000,         // 10 minutes
   STATIC_GC_TIME: 30 * 60 * 1000,            // 30 minutes
+  
+  // Claim status (supply, user balance, conditions)
+  CLAIM_STATUS_STALE_TIME: 30 * 1000,        // 30 seconds
+  CLAIM_STATUS_GC_TIME: 2 * 60 * 1000,       // 2 minutes
 } as const;
 
 // Network Configuration
