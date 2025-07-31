@@ -22,7 +22,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 8.15.0
+          version: 8.0.0
 
       - name: Get pnpm store directory
         shell: bash
