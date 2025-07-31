@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "NFT Minting dApp with Blockchain Integration",
   "private": true,
-
   "scripts": {
     "dev": "pnpm --filter nft-dapp dev",
     "build": "pnpm --filter nft-dapp build",
@@ -12,10 +11,12 @@
     "test": "pnpm --filter blockchain test",
     "test:watch": "pnpm --filter blockchain test:watch",
     "clean": "pnpm -r exec rm -rf node_modules dist .turbo",
-    "install:all": "pnpm install"
+    "install:all": "pnpm install",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "husky": "^9.1.7",
     "typescript": "^5.0.0"
   },
   "engines": {
