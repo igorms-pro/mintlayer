@@ -1,0 +1,26 @@
+{
+  "name": "mintlayer",
+  "version": "1.0.0",
+  "description": "NFT Minting dApp with Blockchain Integration",
+  "private": true,
+
+  "scripts": {
+    "dev": "pnpm --filter nft-dapp dev",
+    "build": "pnpm --filter nft-dapp build",
+    "preview": "pnpm --filter nft-dapp preview",
+    "lint": "pnpm --filter nft-dapp lint",
+    "test": "pnpm --filter blockchain test",
+    "test:watch": "pnpm --filter blockchain test:watch",
+    "clean": "pnpm -r exec rm -rf node_modules dist .turbo",
+    "install:all": "pnpm install"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.0.0"
+}
