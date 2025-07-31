@@ -34,7 +34,20 @@ vi.mock('viem', () => ({
 
 // Mock TanStack Query
 vi.mock('@tanstack/react-query', () => ({
-  useQuery: vi.fn(),
+  useQuery: vi.fn(() => ({
+    data: undefined,
+    isLoading: false,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+    isRefetching: false,
+  })),
+  useQueryClient: vi.fn(() => ({
+    invalidateQueries: vi.fn(),
+    setQueryData: vi.fn(),
+    getQueryData: vi.fn(),
+    refetchQueries: vi.fn(),
+  })),
   QueryClient: vi.fn(),
   QueryClientProvider: ({ children }: { children: React.ReactNode }) => children,
 })) 
