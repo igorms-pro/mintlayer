@@ -1,5 +1,5 @@
-import type { NFT } from '../types/nft';
-import { ENV_CONFIG } from '../config/env';
+import type { NFT } from '@/types/nft';
+import { ENV_CONFIG } from '@/config/env';
 
 const API_BASE_URL = ENV_CONFIG.API_BASE_URL;
 

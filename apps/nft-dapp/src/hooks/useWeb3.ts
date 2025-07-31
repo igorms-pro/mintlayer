@@ -5,18 +5,18 @@ import {
   useWriteContract
 } from 'wagmi';
 import { baseSepolia } from 'wagmi/chains';
-import type { NFT } from '../types/nft';
-import type { 
-  MintState, 
-  UseWeb3Return, 
-  UseTransactionStatusReturn 
-} from '../types/hooks';
-import { 
-  ERC1155_ABI, 
-  CONTRACTS, 
-  CONTRACT_CONFIG, 
-  CONTRACT_HELPERS 
-} from '../config/contracts';
+import type { NFT } from '@/types/nft';
+import type {
+  MintState,
+  UseWeb3Return,
+  UseTransactionStatusReturn
+} from '@/types/hooks';
+import {
+  ERC1155_ABI,
+  CONTRACTS,
+  CONTRACT_CONFIG,
+  CONTRACT_HELPERS
+} from '@/config/contracts';
 
 /**
  * Simplified Web3 hook focused on NFT minting

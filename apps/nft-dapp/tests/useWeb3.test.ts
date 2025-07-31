@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useWeb3 } from './useWeb3';
+import { useWeb3 } from '@/hooks/useWeb3';
 
 // Mock wagmi hooks
 vi.mock('wagmi', () => ({
@@ -36,7 +36,7 @@ vi.mock('viem', () => ({
 }));
 
 // Mock contracts
-vi.mock('../config/contracts', () => ({
+vi.mock('@/config/contracts', () => ({
   CONTRACTS: {
     NFT_COLLECTION: '0x0d26A64e833f84663b3aaDc311c352b3bb81e9Cf',
   },

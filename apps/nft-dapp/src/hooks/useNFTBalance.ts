@@ -1,7 +1,7 @@
 import { useReadContract } from 'wagmi';
 import { useAccount } from 'wagmi';
-import { CONTRACTS, ERC1155_ABI } from '../config/contracts';
-import type { UseNFTBalanceReturn } from '../types/hooks';
+import { CONTRACTS, ERC1155_ABI } from '@/config/contracts';
+import type { UseNFTBalanceReturn } from '@/types/hooks';
 
 /**
  * Hook to check user's NFT balance for a specific token

@@ -2,12 +2,12 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useNFTs, useNFT, useInvalidateNFTs } from './useNFTs';
-import { api } from '../services/api';
-import type { NFT } from '../types/nft';
+import { useNFTs, useNFT, useInvalidateNFTs } from '@/hooks/useNFTs';
+import { api } from '@/services/api';
+import type { NFT } from '@/types/nft';
 
 // Mock the API
-vi.mock('../services/api');
+vi.mock('@/services/api');
 
 const mockNFTs: NFT[] = [
   {

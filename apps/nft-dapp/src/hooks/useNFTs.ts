@@ -1,13 +1,13 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { api } from '../services/api';
-import type { NFT } from '../types/nft';
+import { api } from '@/services/api';
+import type { NFT } from '@/types/nft';
 import type {
   UseNFTsOptions,
   UseNFTsReturn,
   UseNFTReturn,
   UseInvalidateNFTsReturn,
-} from '../types/hooks';
-import { CACHE_TIMES, NETWORK_CONFIG } from '../config/constants';
+} from '@/types/hooks';
+import { CACHE_TIMES, NETWORK_CONFIG } from '@/config/constants';
 
  
 /**

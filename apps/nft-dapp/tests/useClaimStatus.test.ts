@@ -2,10 +2,10 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useClaimStatus } from './useClaimStatus';
+import { useClaimStatus } from '@/hooks/useClaimStatus';
 
 // Mock contracts
-vi.mock('../config/contracts', () => ({
+vi.mock('@/config/contracts', () => ({
   CONTRACTS: {
     NFT_COLLECTION: '0x0d26A64e833f84663b3aaDc311c352b3bb81e9Cf',
   },
@@ -13,7 +13,7 @@ vi.mock('../config/contracts', () => ({
 }));
 
 // Mock useNFTBalance hook
-vi.mock('./useNFTBalance', () => ({
+vi.mock('@/hooks/useNFTBalance', () => ({
   useNFTBalance: () => ({
     balance: 0,
     isLoading: false,

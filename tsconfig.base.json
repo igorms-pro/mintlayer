@@ -24,7 +24,7 @@
     /* Path mapping for monorepo */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./apps/nft-dapp/src/*"]
     },
 
     /* Additional modern settings */

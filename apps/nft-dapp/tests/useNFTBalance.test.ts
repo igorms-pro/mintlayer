@@ -2,11 +2,11 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useNFTBalance } from './useNFTBalance';
+import { useNFTBalance } from '@/hooks/useNFTBalance';
 
 
 // Mock contracts
-vi.mock('../config/contracts', () => ({
+vi.mock('@/config/contracts', () => ({
   CONTRACTS: {
     NFT_COLLECTION: '0x0d26A64e833f84663b3aaDc311c352b3bb81e9Cf',
   },

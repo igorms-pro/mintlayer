@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: pnpm --filter nft-dapp exec playwright install --with-deps
+
+      - name: Lint
+        run: pnpm --filter nft-dapp lint
+
+      - name: Type check
+        run: pnpm --filter nft-dapp type-check
+
+      - name: Run unit/integration tests
+        run: pnpm --filter nft-dapp test
+
+      - name: Run E2E tests
+        run: pnpm --filter nft-dapp playwright:test
+
+      - name: Build app
+        run: pnpm --filter nft-dapp build 

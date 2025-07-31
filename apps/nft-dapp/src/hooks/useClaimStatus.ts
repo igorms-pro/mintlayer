@@ -1,8 +1,8 @@
 import { useReadContract } from 'wagmi';
 import { useAccount } from 'wagmi';
-import { CONTRACTS, ERC1155_ABI } from '../config/contracts';
-import { CACHE_TIMES } from '../config/constants';
-import type { UseClaimStatusReturn, ClaimError } from '../types/hooks';
+import { CONTRACTS, ERC1155_ABI } from '@/config/contracts';
+import { CACHE_TIMES } from '@/config/constants';
+import type { UseClaimStatusReturn, ClaimError } from '@/types/hooks';
 import { useNFTBalance } from './useNFTBalance';
 
 /**
