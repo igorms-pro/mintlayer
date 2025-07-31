@@ -54,7 +54,7 @@ export interface UseWeb3Return {
 }
 
 export interface UseTransactionStatusReturn {
-  receipt: any; // TransactionReceipt type from viem
+  receipt: import('viem').TransactionReceipt | undefined;
   isConfirming: boolean;
   isConfirmed: boolean;
   isError: boolean;

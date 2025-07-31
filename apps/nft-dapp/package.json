@@ -14,6 +14,7 @@
     "prepare": "husky",
     "type-check": "tsc --noEmit",
     "playwright:test": "playwright test",
+    "lint-staged": "lint-staged",
     "playwright:ui": "playwright test --ui",
     "playwright:debug": "playwright test --debug",
     "check": "pnpm lint && pnpm type-check && pnpm test",
