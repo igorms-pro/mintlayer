@@ -10,6 +10,7 @@ const buttonVariants = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-base h-9',
     lg: 'px-6 py-3 text-lg',
+    xl: 'px-4 py-2.5 text-base h-10',
   },
 } as const;
 

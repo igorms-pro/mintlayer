@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { useNFTBalance } from '@/hooks/useNFTBalance';
 import { useClaimStatus } from '@/hooks/useClaimStatus';
@@ -15,6 +16,8 @@ export interface NFTCardProps {
  */
 
 export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
+  const navigate = useNavigate();
+  
   // Hooks for NFT data
   const { balance } = useNFTBalance(nft.id);
   const { canClaim, canClaimReason, remainingClaims } = useClaimStatus(nft.id);
@@ -74,17 +77,28 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
           }
         </p>
 
-        {/* Claim Button */}
-        <Button
-          onClick={handleClaim}
-          variant="primary"
-          size="md"
-          loading={mintState.isPending}
-          disabled={!canClaim || mintState.isPending}
-          className="w-full"
-        >
-          {mintState.isPending ? 'Claiming...' : 'Claim NFT'}
-        </Button>
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          <Button
+            onClick={handleClaim}
+            variant="primary"
+            size="md"
+            loading={mintState.isPending}
+            disabled={!canClaim || mintState.isPending}
+            className="w-full"
+          >
+            {mintState.isPending ? 'Claiming...' : 'Claim NFT'}
+          </Button>
+          
+          <Button
+            onClick={() => navigate(`/nft/${nft.id}`)}
+            variant="outline"
+            size="md"
+            className="w-full"
+          >
+            View Details
+          </Button>
+        </div>
 
         {/* Claim Status */}
         {!canClaim && canClaimReason && (

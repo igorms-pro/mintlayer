@@ -64,3 +64,31 @@ export const TIME_FORMATS = {
 export type CacheTimeKeys = keyof typeof CACHE_TIMES;
 export type NetworkConfigKeys = keyof typeof NETWORK_CONFIG;
 export type ErrorMessageKeys = keyof typeof ERROR_MESSAGES;
+
+// Social links configuration
+export const KILN_SOCIAL_LINKS = [
+  {
+    name: 'X (Twitter)',
+    url: 'https://x.com/kiln_finance',
+    icon: '/x.svg',
+    label: '@Kiln_finance'
+  },
+  {
+    name: 'LinkedIn',
+    url: 'https://www.linkedin.com/company/kiln-fi/',
+    icon: '/linkedin.svg',
+    label: '@Kiln-fi'
+  },
+  {
+    name: 'YouTube',
+    url: 'https://www.youtube.com/channel/UCegmzwd40b91ikGzZBgAa4w',
+    icon: '/youtube.svg',
+    label: '@kiln_finance'
+  }
+] as const;
+
+export const KILN_WEBSITE = {
+  name: 'Website',
+  url: 'https://www.kiln.fi/',
+  icon: '/goTo.svg'
+} as const;
