@@ -2,7 +2,7 @@ import { useReadContract } from 'wagmi';
 import { useAccount } from 'wagmi';
 import { CONTRACTS, ERC1155_ABI } from '@/config/contracts';
 import { CACHE_TIMES } from '@/config/constants';
-import type { UseClaimStatusReturn, ClaimError } from '@/types/hooks';
+import type { UseClaimStatusReturn } from '@/types/hooks';
 import { useNFTBalance } from './useNFTBalance';
 
 /**
@@ -18,9 +18,6 @@ export const useClaimStatus = (tokenId: string): UseClaimStatusReturn => {
   // Get active claim condition ID
   const {
     data: activeConditionId,
-    isLoading: isConditionIdLoading,
-    isError: isConditionIdError,
-    error: conditionIdError,
   } = useReadContract({
     address: CONTRACTS.NFT_COLLECTION,
     abi: ERC1155_ABI,
@@ -36,9 +33,6 @@ export const useClaimStatus = (tokenId: string): UseClaimStatusReturn => {
   // Get claim condition details
   const {
     data: claimCondition,
-    isLoading: isConditionLoading,
-    isError: isConditionError,
-    error: conditionError,
   } = useReadContract({
     address: CONTRACTS.NFT_COLLECTION,
     abi: ERC1155_ABI,
@@ -50,7 +44,6 @@ export const useClaimStatus = (tokenId: string): UseClaimStatusReturn => {
       gcTime: CACHE_TIMES.CLAIM_STATUS_GC_TIME,
     },
   });
- 
 
   // Format claim condition data
   const formattedCondition = claimCondition ? {
@@ -63,10 +56,10 @@ export const useClaimStatus = (tokenId: string): UseClaimStatusReturn => {
     merkleRoot: claimCondition.merkleRoot,
   } : null;
 
-  // Simple claim validation - ignore supplyClaimed for now
+  // Simple claim validation
   const canClaim = isConnected && !!formattedCondition;
 
-  // Simple reason check - ignore supplyClaimed
+  // Simple reason check
   const getCanClaimReason = (): string | null => {
     if (!isConnected) return 'Wallet not connected';
     if (!formattedCondition) return 'No claim condition available';
@@ -74,50 +67,14 @@ export const useClaimStatus = (tokenId: string): UseClaimStatusReturn => {
   };
 
   // Calculate remaining claims for user
-  const hasReachedLimit = formattedCondition && formattedCondition.quantityLimitPerWallet > 0
-    ? userBalance >= formattedCondition.quantityLimitPerWallet
-    : false;
-
   const remainingClaims = formattedCondition && formattedCondition.quantityLimitPerWallet > 0
     ? Math.max(0, formattedCondition.quantityLimitPerWallet - userBalance)
     : 999; // Default to high number if no limit
-
-  // Error handling
-  const createClaimError = (error: Error | null, type: 'NETWORK' | 'CONTRACT'): ClaimError | null => {
-    if (!error) return null;
-    
-    return {
-      type,
-      message: type === 'NETWORK' 
-        ? 'Failed to fetch claim data. Please check your connection.'
-        : 'Contract error occurred. Please try again.',
-      details: error.message,
-    };
-  };
 
   return {
     // Claim availability
     canClaim: canClaim || false,
     canClaimReason: getCanClaimReason(),
-    
-    // Claim conditions
-    claimCondition: formattedCondition,
-    activeConditionId: activeConditionId ? Number(activeConditionId) : null,
-    
-    // User-specific validation
-    userBalance,
-    hasReachedLimit,
     remainingClaims,
-    
-    // Loading states
-    isLoading: isConditionIdLoading || isConditionLoading,
-    isConditionIdLoading,
-    isConditionLoading,
-    
-    // Error states
-    isError: isConditionIdError || isConditionError,
-    isConditionIdError,
-    isConditionError,
-    error: createClaimError(conditionIdError || conditionError, 'CONTRACT'),
   };
 }; 

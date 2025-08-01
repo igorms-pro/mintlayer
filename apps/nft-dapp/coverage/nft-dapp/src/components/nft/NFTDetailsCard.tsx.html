@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.4% </span>
+                <span class="strong">67.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>122/181</span>
+                <span class='fraction'>124/183</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">15.78% </span>
+                <span class="strong">14.28% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/19</span>
+                <span class='fraction'>3/21</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.4% </span>
+                <span class="strong">67.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>122/181</span>
+                <span class='fraction'>124/183</span>
             </div>
         
             
@@ -304,7 +304,13 @@
 <a name='L239'></a><a href='#L239'>239</a>
 <a name='L240'></a><a href='#L240'>240</a>
 <a name='L241'></a><a href='#L241'>241</a>
-<a name='L242'></a><a href='#L242'>242</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -419,7 +425,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -442,6 +448,12 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -515,7 +527,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -565,7 +577,7 @@ export interface NFTDetailsCardProps {
  */
 export const NFTDetailsCard: React.FC&lt;NFTDetailsCardProps&gt; = ({ nft }) =&gt; {
   // Hooks for NFT data
-  const { balance, refetch: refetchBalance } = useNFTBalance(nft.id);
+  const { balance, refetch: refetchBalance, isLoading: balanceLoading, isError: balanceError } = useNFTBalance(nft.id);
   const { canClaim, canClaimReason, remainingClaims } = useClaimStatus(nft.id);
   const { mint, mintState, resetMintState } = useWeb3();
 &nbsp;
@@ -602,7 +614,7 @@ export const NFTDetailsCard: React.FC&lt;NFTDetailsCardProps&gt; = ({ nft }) =&g
       // Dismiss the pending toast if it exists
 <span class="cstat-no" title="statement not covered" >      toast.dismiss('transaction-pending');</span>
       
-<span class="cstat-no" title="statement not covered" >      toast.error('Transaction cancelled or failed. Please try again.', {</span>
+<span class="cstat-no" title="statement not covered" >      toast.error('Transaction cancelled', {</span>
 <span class="cstat-no" title="statement not covered" >        duration: TOAST_CONFIG.DURATION,</span>
 <span class="cstat-no" title="statement not covered" >      });</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
@@ -617,7 +629,7 @@ export const NFTDetailsCard: React.FC&lt;NFTDetailsCardProps&gt; = ({ nft }) =&g
 <span class="cstat-no" title="statement not covered" >        await mint(nft);</span>
 <span class="cstat-no" title="statement not covered" >      } catch (error) {</span>
 <span class="cstat-no" title="statement not covered" >        console.error('Failed to claim NFT:', error);</span>
-<span class="cstat-no" title="statement not covered" >        toast.error('Transaction cancelled or failed. Please try again.', {</span>
+<span class="cstat-no" title="statement not covered" >        toast.error('Transaction cancelled', {</span>
 <span class="cstat-no" title="statement not covered" >          duration: TOAST_CONFIG.DURATION,</span>
 <span class="cstat-no" title="statement not covered" >        });</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
@@ -660,7 +672,7 @@ export const NFTDetailsCard: React.FC&lt;NFTDetailsCardProps&gt; = ({ nft }) =&g
         )}
         {mintState.<span class="branch-0 cbranch-no" title="branch not covered" >isError &amp;&amp; (</span>
 <span class="cstat-no" title="statement not covered" >          &lt;p className="text-sm text-red-600 text-center"&gt;</span>
-<span class="cstat-no" title="statement not covered" >            Error: {mintState.error?.message || 'Transaction failed'}</span>
+            Transaction cancelled
 <span class="cstat-no" title="statement not covered" >          &lt;/p&gt;</span>
         )}
         {mintState.<span class="branch-0 cbranch-no" title="branch not covered" >isPending &amp;&amp; !mintState.<span class="branch-0 cbranch-no" title="branch not covered" >isSuccess &amp;&amp; (</span></span>
@@ -682,7 +694,13 @@ export const NFTDetailsCard: React.FC&lt;NFTDetailsCardProps&gt; = ({ nft }) =&g
             {nft.metadata.name}
           &lt;/h1&gt;
           &lt;p className="text-sm text-grey-primary"&gt;
-            You own {balance}
+            {<span class="branch-0 cbranch-no" title="branch not covered" >balanceLoading ? (</span>
+<span class="cstat-no" title="statement not covered" >              'Loading balance...'</span>
+            ) : <span class="branch-0 cbranch-no" title="branch not covered" >balanceError ? (</span>
+<span class="cstat-no" title="statement not covered" >              'Failed to load balance'</span>
+            ) : (
+              `You own ${balance}`
+            )}
           &lt;/p&gt;
         &lt;/div&gt;
         &lt;div className="flex space-x-2"&gt;
@@ -756,7 +774,7 @@ export const NFTDetailsCard: React.FC&lt;NFTDetailsCardProps&gt; = ({ nft }) =&g
           )}
           {mintState.<span class="branch-0 cbranch-no" title="branch not covered" >isError &amp;&amp; (</span>
 <span class="cstat-no" title="statement not covered" >            &lt;p className="text-sm text-red-600 text-center"&gt;</span>
-<span class="cstat-no" title="statement not covered" >              Error: {mintState.error?.message || 'Transaction failed'}</span>
+              Transaction cancelled
 <span class="cstat-no" title="statement not covered" >            &lt;/p&gt;</span>
           )}
           {mintState.<span class="branch-0 cbranch-no" title="branch not covered" >isPending &amp;&amp; !mintState.<span class="branch-0 cbranch-no" title="branch not covered" >isSuccess &amp;&amp; (</span></span>
@@ -793,7 +811,7 @@ export const NFTDetailsCard: React.FC&lt;NFTDetailsCardProps&gt; = ({ nft }) =&g
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-01T19:53:47.661Z
+                at 2025-08-01T20:47:54.745Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

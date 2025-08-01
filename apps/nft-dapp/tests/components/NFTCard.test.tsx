@@ -21,18 +21,7 @@ vi.mock('@/hooks/useClaimStatus', () => ({
   useClaimStatus: () => ({
     canClaim: true,
     canClaimReason: null,
-    userBalance: 0,
-    hasReachedLimit: false,
     remainingClaims: 999,
-    claimCondition: null,
-    activeConditionId: null,
-    isLoading: false,
-    isConditionIdLoading: false,
-    isConditionLoading: false,
-    isError: false,
-    isConditionIdError: false,
-    isConditionError: false,
-    error: null,
   }),
 }));
 

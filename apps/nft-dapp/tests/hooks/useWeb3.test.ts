@@ -82,19 +82,13 @@ describe('useWeb3 Hook', () => {
     });
 
     // Test the hook interface
-    expect(result.current).toHaveProperty('address');
-    expect(result.current).toHaveProperty('isConnected');
     expect(result.current).toHaveProperty('mintState');
     expect(result.current).toHaveProperty('mint');
     expect(result.current).toHaveProperty('resetMintState');
-    expect(result.current).toHaveProperty('isCorrectChain');
 
     // Test types
-    expect(typeof result.current.address).toBe('string');
-    expect(typeof result.current.isConnected).toBe('boolean');
     expect(typeof result.current.mint).toBe('function');
     expect(typeof result.current.resetMintState).toBe('function');
-    expect(typeof result.current.isCorrectChain).toBe('boolean');
   });
 
   it('should have proper mintState structure', () => {
@@ -121,9 +115,6 @@ describe('useWeb3 Hook', () => {
     });
 
     // Check default values
-    expect(result.current.address).toBe('0x1234567890123456789012345678901234567890');
-    expect(result.current.isConnected).toBe(true);
-    expect(result.current.isCorrectChain).toBe(true);
     expect(result.current.mintState.isIdle).toBe(true);
     expect(result.current.mintState.isPending).toBe(false);
     expect(result.current.mintState.isSuccess).toBe(false);

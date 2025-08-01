@@ -87,8 +87,6 @@ describe('MoreCollection Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<MoreCollection currentNFTId="1" />, { wrapper: createWrapper() });
@@ -106,8 +104,6 @@ describe('MoreCollection Component', () => {
       isLoading: true,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<MoreCollection currentNFTId="1" />, { wrapper: createWrapper() });
@@ -122,8 +118,6 @@ describe('MoreCollection Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     const { container } = render(<MoreCollection currentNFTId="1" />, { wrapper: createWrapper() });
@@ -138,8 +132,6 @@ describe('MoreCollection Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<MoreCollection currentNFTId="1" maxItems={1} />, { wrapper: createWrapper() });
@@ -154,8 +146,6 @@ describe('MoreCollection Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<MoreCollection currentNFTId="1" />, { wrapper: createWrapper() });
@@ -170,8 +160,6 @@ describe('MoreCollection Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<MoreCollection currentNFTId="1" />, { wrapper: createWrapper() });
@@ -186,8 +174,6 @@ describe('MoreCollection Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<MoreCollection currentNFTId="1" />, { wrapper: createWrapper() });

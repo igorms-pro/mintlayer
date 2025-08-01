@@ -58,8 +58,6 @@ describe('NFTDetails Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
   });
 
@@ -69,7 +67,6 @@ describe('NFTDetails Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
     });
 
     render(<NFTDetails />, { wrapper: createWrapper() });
@@ -85,7 +82,6 @@ describe('NFTDetails Component', () => {
       isLoading: true,
       isError: false,
       error: null,
-      refetch: vi.fn(),
     });
 
     render(<NFTDetails />, { wrapper: createWrapper() });
@@ -99,7 +95,6 @@ describe('NFTDetails Component', () => {
       isLoading: false,
       isError: true,
       error: new Error('NFT not found'),
-      refetch: vi.fn(),
     });
 
     render(<NFTDetails />, { wrapper: createWrapper() });
@@ -115,7 +110,6 @@ describe('NFTDetails Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
     });
 
     render(<NFTDetails />, { wrapper: createWrapper() });
@@ -129,7 +123,6 @@ describe('NFTDetails Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
     });
 
     render(<NFTDetails />, { wrapper: createWrapper() });
@@ -145,7 +138,6 @@ describe('NFTDetails Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
     });
 
     // Mock useNFTs to return some related NFTs so MoreCollection renders
@@ -157,8 +149,6 @@ describe('NFTDetails Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<NFTDetails />, { wrapper: createWrapper() });
@@ -173,7 +163,6 @@ describe('NFTDetails Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
     });
 
     render(<NFTDetails />, { wrapper: createWrapper() });

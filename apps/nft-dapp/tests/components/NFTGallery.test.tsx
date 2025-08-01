@@ -74,8 +74,6 @@ describe('NFTGallery Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<NFTGallery />, { wrapper: createWrapper() });
@@ -91,8 +89,6 @@ describe('NFTGallery Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<NFTGallery />, { wrapper: createWrapper() });
@@ -109,8 +105,6 @@ describe('NFTGallery Component', () => {
       isLoading: true,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<NFTGallery />, { wrapper: createWrapper() });
@@ -127,8 +121,6 @@ describe('NFTGallery Component', () => {
       isLoading: false,
       isError: true,
       error: new Error('Failed to load NFTs'),
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<NFTGallery />, { wrapper: createWrapper() });
@@ -144,8 +136,6 @@ describe('NFTGallery Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<NFTGallery />, { wrapper: createWrapper() });
@@ -161,8 +151,6 @@ describe('NFTGallery Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<NFTGallery />, { wrapper: createWrapper() });
@@ -176,8 +164,6 @@ describe('NFTGallery Component', () => {
       isLoading: false,
       isError: false,
       error: null,
-      refetch: vi.fn(),
-      isRefetching: false,
     });
 
     render(<NFTGallery />, { wrapper: createWrapper() });

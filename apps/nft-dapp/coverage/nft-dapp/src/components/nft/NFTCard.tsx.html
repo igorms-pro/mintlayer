@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.04% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>64/82</span>
+                <span class='fraction'>66/88</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">54.54% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/9</span>
+                <span class='fraction'>6/11</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.04% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>64/82</span>
+                <span class='fraction'>66/88</span>
             </div>
         
             
@@ -171,7 +171,17 @@
 <a name='L106'></a><a href='#L106'>106</a>
 <a name='L107'></a><a href='#L107'>107</a>
 <a name='L108'></a><a href='#L108'>108</a>
-<a name='L109'></a><a href='#L109'>109</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -229,6 +239,16 @@
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
@@ -301,7 +321,7 @@ export const NFTCard: React.FC&lt;NFTCardProps&gt; = ({ nft, onClaim }) =&gt; {
   const navigate = useNavigate();
 &nbsp;
   // Hooks for NFT data
-  const { balance } = useNFTBalance(nft.id);
+  const { balance, isLoading: balanceLoading, isError: balanceError } = useNFTBalance(nft.id);
   const { canClaim, canClaimReason } = useClaimStatus(nft.id);
   const { mint, mintState } = useWeb3();
 &nbsp;
@@ -334,9 +354,19 @@ export const NFTCard: React.FC&lt;NFTCardProps&gt; = ({ nft, onClaim }) =&gt; {
           &lt;h3 className="text-lg font-semibold text-gray-900 truncate flex-1" data-testid="nft-name"&gt;
             {nft.metadata.name}
           &lt;/h3&gt;
-          {balance &gt; <span class="branch-0 cbranch-no" title="branch not covered" >0 &amp;&amp; (</span>
+          {!balanceLoading &amp;&amp; !balanceError &amp;&amp; balance &gt; <span class="branch-0 cbranch-no" title="branch not covered" >0 &amp;&amp; (</span>
 <span class="cstat-no" title="statement not covered" >            &lt;span className="ml-2 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-none" data-testid="nft-balance"&gt;</span>
 <span class="cstat-no" title="statement not covered" >              You own {balance}</span>
+<span class="cstat-no" title="statement not covered" >            &lt;/span&gt;</span>
+          )}
+          {<span class="branch-0 cbranch-no" title="branch not covered" >balanceLoading &amp;&amp; (</span>
+<span class="cstat-no" title="statement not covered" >            &lt;span className="ml-2 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-none" data-testid="nft-balance-loading"&gt;</span>
+              Loading...
+<span class="cstat-no" title="statement not covered" >            &lt;/span&gt;</span>
+          )}
+          {<span class="branch-0 cbranch-no" title="branch not covered" >balanceError &amp;&amp; (</span>
+<span class="cstat-no" title="statement not covered" >            &lt;span className="ml-2 px-2 py-1 text-xs font-medium bg-red-100 text-red-600 rounded-none" data-testid="nft-balance-error"&gt;</span>
+              Error
 <span class="cstat-no" title="statement not covered" >            &lt;/span&gt;</span>
           )}
         &lt;/div&gt;
@@ -394,7 +424,7 @@ export const NFTCard: React.FC&lt;NFTCardProps&gt; = ({ nft, onClaim }) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-01T19:53:47.661Z
+                at 2025-08-01T20:47:54.745Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

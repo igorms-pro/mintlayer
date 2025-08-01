@@ -18,7 +18,7 @@ export interface NFTDetailsCardProps {
  */
 export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
   // Hooks for NFT data
-  const { balance, refetch: refetchBalance } = useNFTBalance(nft.id);
+  const { balance, refetch: refetchBalance, isLoading: balanceLoading, isError: balanceError } = useNFTBalance(nft.id);
   const { canClaim, canClaimReason, remainingClaims } = useClaimStatus(nft.id);
   const { mint, mintState, resetMintState } = useWeb3();
 
@@ -55,7 +55,7 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
       // Dismiss the pending toast if it exists
       toast.dismiss('transaction-pending');
       
-      toast.error('Transaction cancelled or failed. Please try again.', {
+      toast.error('Transaction cancelled', {
         duration: TOAST_CONFIG.DURATION,
       });
     }
@@ -70,7 +70,7 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
         await mint(nft);
       } catch (error) {
         console.error('Failed to claim NFT:', error);
-        toast.error('Transaction cancelled or failed. Please try again.', {
+        toast.error('Transaction cancelled', {
           duration: TOAST_CONFIG.DURATION,
         });
       }
@@ -113,7 +113,7 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
         )}
         {mintState.isError && (
           <p className="text-sm text-red-600 text-center">
-            Error: {mintState.error?.message || 'Transaction failed'}
+            Transaction cancelled
           </p>
         )}
         {mintState.isPending && !mintState.isSuccess && (
@@ -135,7 +135,13 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
             {nft.metadata.name}
           </h1>
           <p className="text-sm text-grey-primary">
-            You own {balance}
+            {balanceLoading ? (
+              'Loading balance...'
+            ) : balanceError ? (
+              'Failed to load balance'
+            ) : (
+              `You own ${balance}`
+            )}
           </p>
         </div>
         <div className="flex space-x-2">
@@ -209,7 +215,7 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
           )}
           {mintState.isError && (
             <p className="text-sm text-red-600 text-center">
-              Error: {mintState.error?.message || 'Transaction failed'}
+              Transaction cancelled
             </p>
           )}
           {mintState.isPending && !mintState.isSuccess && (

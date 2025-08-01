@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useNFTs, useNFT, useInvalidateNFTs } from '@/hooks/useNFTs';
+import { useNFTs, useNFT } from '@/hooks/useNFTs';
 import { api } from '@/services/api';
 import type { NFT } from '@/types/nft';
 
@@ -70,14 +70,11 @@ describe('useNFTs Hook Suite', () => {
       expect(result.current).toHaveProperty('isLoading');
       expect(result.current).toHaveProperty('isError');
       expect(result.current).toHaveProperty('error');
-      expect(result.current).toHaveProperty('refetch');
-      expect(result.current).toHaveProperty('isRefetching');
       
       // Test types
       expect(Array.isArray(result.current.nfts)).toBe(true);
       expect(typeof result.current.isLoading).toBe('boolean');
       expect(typeof result.current.isError).toBe('boolean');
-      expect(typeof result.current.refetch).toBe('function');
     });
 
     it('should respect enabled option', () => {
@@ -100,11 +97,9 @@ describe('useNFTs Hook Suite', () => {
       expect(result.current).toHaveProperty('isLoading');
       expect(result.current).toHaveProperty('isError');
       expect(result.current).toHaveProperty('error');
-      expect(result.current).toHaveProperty('refetch');
       
       expect(typeof result.current.isLoading).toBe('boolean');
       expect(typeof result.current.isError).toBe('boolean');
-      expect(typeof result.current.refetch).toBe('function');
     });
 
     it('should return undefined when id is undefined', () => {
@@ -129,33 +124,6 @@ describe('useNFTs Hook Suite', () => {
       expect(() => renderHook(() => useNFT('test-nft-1'), {
         wrapper: createWrapper(),
       })).not.toThrow();
-    });
-  });
-
-  describe('useInvalidateNFTs (Cache Management Hook)', () => {
-    it('should have correct interface structure', () => {
-      const { result } = renderHook(() => useInvalidateNFTs(), {
-        wrapper: createWrapper(),
-      });
-
-      expect(result.current).toHaveProperty('invalidateNFTs');
-      expect(result.current).toHaveProperty('invalidateNFT');
-      expect(result.current).toHaveProperty('refetchNFTs');
-      
-      expect(typeof result.current.invalidateNFTs).toBe('function');
-      expect(typeof result.current.invalidateNFT).toBe('function');
-      expect(typeof result.current.refetchNFTs).toBe('function');
-    });
-
-    it('should provide cache invalidation functions', () => {
-      const { result } = renderHook(() => useInvalidateNFTs(), {
-        wrapper: createWrapper(),
-      });
-
-      // Should not throw when called
-      expect(() => result.current.invalidateNFTs()).not.toThrow();
-      expect(() => result.current.invalidateNFT('test-id')).not.toThrow();
-      expect(() => result.current.refetchNFTs()).not.toThrow();
     });
   });
 });

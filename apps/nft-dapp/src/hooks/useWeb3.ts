@@ -8,8 +8,7 @@ import { baseSepolia } from 'wagmi/chains';
 import type { NFT } from '@/types/nft';
 import type {
   MintState,
-  UseWeb3Return,
-  UseTransactionStatusReturn
+  UseWeb3Return
 } from '@/types/hooks';
 import {
   ERC1155_ABI,
@@ -51,7 +50,6 @@ export const useWeb3 = (): UseWeb3Return => {
   // Update mint state when transaction is confirmed
   useEffect(() => {
     if (transactionReceipt && mintState.isPending) {
-      console.log('Transaction confirmed in useWeb3!');
       setMintState(prev => ({
         ...prev,
         isPending: false,
@@ -79,19 +77,15 @@ export const useWeb3 = (): UseWeb3Return => {
     });
 
     try {
-
-
-      // REAL CONTRACT INTERACTION - claim function
+      // claim function
       const txHash = await writeContractAsync({
         address: CONTRACTS.NFT_COLLECTION,
         abi: ERC1155_ABI,
         functionName: 'claim',
         args: CONTRACT_HELPERS.prepareClaimArgs(nft.id, CONTRACT_CONFIG.DEFAULT_CLAIM_QUANTITY, address),
-        gas: BigInt(300000), // Increased gas limit for complex claim function
-        value: BigInt(0), // Free claim
+        gas: BigInt(300000),
+        value: BigInt(0),
       });
-
-      console.log('Claim transaction hash:', txHash);
 
       // Set pending state - transaction status will be tracked by useWaitForTransactionReceipt
       setMintState({
@@ -105,13 +99,6 @@ export const useWeb3 = (): UseWeb3Return => {
 
     } catch (error) {
       console.error('Claim error:', error);
-      
-      // Log detailed error information
-      if (error instanceof Error) {
-        console.error('Error message:', error.message);
-        console.error('Error name:', error.name);
-        console.error('Error stack:', error.stack);
-      }
       
       setMintState({
         isIdle: false,
@@ -135,40 +122,9 @@ export const useWeb3 = (): UseWeb3Return => {
   }, []);
 
   return {
-    // Account state (read-only for RainbowKit)
-    address,
-    isConnected,
-    
     // Minting
     mintState,
     mint,
     resetMintState,
-    
-    // Chain validation
-    isCorrectChain,
-  };
-};
-
-/**
- * Hook for transaction status tracking
- */
-export const useTransactionStatus = (txHash: string | undefined): UseTransactionStatusReturn => {
-  const { data, isLoading, isError, error } = useWaitForTransactionReceipt({
-    hash: txHash as `0x${string}`,
-    chainId: baseSepolia.id,
-    query: {
-      enabled: !!txHash,
-      retry: 3,
-      retryDelay: 1000,
-    },
-  });
-
-  return {
-    receipt: data,
-    isConfirming: isLoading,
-    isConfirmed: !!data,
-    isError,
-    error,
-    confirmations: data?.blockNumber ? Number(data.blockNumber) : 0,
   };
 };

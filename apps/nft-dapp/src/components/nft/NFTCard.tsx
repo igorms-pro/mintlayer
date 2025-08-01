@@ -20,7 +20,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
   const navigate = useNavigate();
 
   // Hooks for NFT data
-  const { balance } = useNFTBalance(nft.id);
+  const { balance, isLoading: balanceLoading, isError: balanceError } = useNFTBalance(nft.id);
   const { canClaim, canClaimReason } = useClaimStatus(nft.id);
   const { mint, mintState } = useWeb3();
 
@@ -53,9 +53,19 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
           <h3 className="text-lg font-semibold text-gray-900 truncate flex-1" data-testid="nft-name">
             {nft.metadata.name}
           </h3>
-          {balance > 0 && (
+          {!balanceLoading && !balanceError && balance > 0 && (
             <span className="ml-2 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-none" data-testid="nft-balance">
               You own {balance}
+            </span>
+          )}
+          {balanceLoading && (
+            <span className="ml-2 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-none" data-testid="nft-balance-loading">
+              Loading...
+            </span>
+          )}
+          {balanceError && (
+            <span className="ml-2 px-2 py-1 text-xs font-medium bg-red-100 text-red-600 rounded-none" data-testid="nft-balance-error">
+              Error
             </span>
           )}
         </div>
