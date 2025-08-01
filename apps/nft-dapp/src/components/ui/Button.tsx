@@ -19,6 +19,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   size?: keyof typeof buttonVariants.size;
   loading?: boolean;
   children: React.ReactNode;
+  'data-testid'?: string;
 }
 
 /**

@@ -23,8 +23,8 @@ export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="px-4 sm:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+      <div className="px-4 sm:px-8 py-8" data-testid="nft-gallery">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center" data-testid="gallery-title">
           KILN NFT Collection
         </h1>
         <Loader size="lg" className="py-20" />
@@ -35,8 +35,8 @@ export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
   // Error state
   if (isError) {
     return (
-      <div className="px-4 sm:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+      <div className="px-4 sm:px-8 py-8" data-testid="nft-gallery">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center" data-testid="gallery-title">
           KILN NFT Collection
         </h1>
         <div className="text-center py-12">
@@ -61,8 +61,8 @@ export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
   // Empty state
   if (!nfts || nfts.length === 0) {
     return (
-      <div className="px-4 sm:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+      <div className="px-4 sm:px-8 py-8" data-testid="nft-gallery">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center" data-testid="gallery-title">
           KILN NFT Collection
         </h1>
         <div className="text-center py-12">
@@ -80,19 +80,19 @@ export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
 
   // normal state
   return (
-    <div className="px-4 sm:px-8 py-8">
+    <div className="px-4 sm:px-8 py-8" data-testid="nft-gallery">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2" data-testid="gallery-title">
           KILN NFT Collection ({nfts.length})
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600" data-testid="gallery-subtitle">
           Discover and claim your unique KILN NFTs
         </p>
       </div>
 
       {/* NFT Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" data-testid="nft-grid">
         {nfts.map((nft) => (
           <NFTCard
             key={nft.id}

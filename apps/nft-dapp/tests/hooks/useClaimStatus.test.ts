@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useClaimStatus } from '../src/hooks/useClaimStatus';
+import { useClaimStatus } from '@/hooks/useClaimStatus';
 
 // Mock the hooks with simple implementations
-vi.mock('../src/hooks/useNFTBalance', () => ({
+vi.mock('@/hooks/useNFTBalance', () => ({
   useNFTBalance: vi.fn(() => ({
     balance: 0,
     isLoading: false,

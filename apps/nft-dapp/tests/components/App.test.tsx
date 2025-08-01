@@ -2,8 +2,8 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { WagmiProvider } from 'wagmi';
-import { config } from '../src/config/wagmi';
-import App from '../src/App';
+import { config } from '@/config/wagmi';
+import App from '@/App';
 
 // Mock RainbowKit to avoid provider issues in tests
 vi.mock('@rainbow-me/rainbowkit', () => ({

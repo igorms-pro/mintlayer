@@ -19,7 +19,7 @@ export const Loader: React.FC<LoaderProps> = ({
   };
 
   return (
-    <div className={`flex justify-center items-center ${className}`}>
+    <div className={`flex justify-center items-center ${className}`} role="status">
       <div className={`${sizeClasses[size]} animate-spin rounded-full border-2 border-gray-300 border-t-black-primary`} />
     </div>
   );

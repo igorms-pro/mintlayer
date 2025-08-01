@@ -37,28 +37,29 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
   };
 
   return (
-    <div className="group relative bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 overflow-hidden">
+    <div className="group relative bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 overflow-hidden" data-testid="nft-card">
       <div className="aspect-square overflow-hidden bg-gray-100">
         <img
           src={getImageUrl(nft.metadata.image)}
           alt={nft.metadata.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
+          data-testid="nft-image"
         />
       </div>
 
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg font-semibold text-gray-900 truncate flex-1">
+          <h3 className="text-lg font-semibold text-gray-900 truncate flex-1" data-testid="nft-name">
             {nft.metadata.name}
           </h3>
           {balance > 0 && (
-            <span className="ml-2 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-none">
+            <span className="ml-2 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-none" data-testid="nft-balance">
               You own {balance}
             </span>
           )}
         </div>
-        <p className="sm:text-base text-sm text-grey-primary mb-4 line-clamp-2 font-normal leading-6 tracking-normal">
+        <p className="sm:text-base text-sm text-grey-primary mb-4 line-clamp-2 font-normal leading-6 tracking-normal" data-testid="nft-description">
           {nft.metadata.description.length > 80
             ? `${nft.metadata.description.substring(0, 80)}...`
             : nft.metadata.description}
@@ -71,6 +72,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
             loading={mintState.isPending}
             disabled={!canClaim || mintState.isPending}
             className="w-full"
+            data-testid="claim-button"
           >
             {mintState.isPending ? 'Claiming...' : 'Claim NFT'}
           </Button>
@@ -79,13 +81,14 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
             variant="outline"
             size="md"
             className="w-full"
+            data-testid="view-details-button"
           >
             View Details
           </Button>
         </div>
 
         {!canClaim && canClaimReason && (
-          <p className="mt-2 text-xs text-gray-500 text-center">
+          <p className="mt-2 text-xs text-gray-500 text-center" data-testid="claim-error-message">
             {canClaimReason}
           </p>
         )}
@@ -93,7 +96,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
 
       </div>
       {mintState.isSuccess && (
-        <div className="absolute inset-0 bg-green-50 border-2 border-green-500 flex items-center justify-center">
+        <div className="absolute inset-0 bg-green-50 border-2 border-green-500 flex items-center justify-center" data-testid="claim-success-overlay">
           <div className="text-center">
             <div className="text-green-600 text-2xl mb-2">✓</div>
             <p className="text-green-800 font-medium">Claimed Successfully!</p>
