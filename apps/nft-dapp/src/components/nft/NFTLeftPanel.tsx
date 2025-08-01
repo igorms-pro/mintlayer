@@ -1,6 +1,7 @@
 import React from 'react';
 import type { NFT } from '@/types/nft';
 import { KilnCard } from './KilnCard';
+import { getImageUrl } from '@/utils/ipfs';
 
 export interface NFTLeftPanelProps {
   nft: NFT;
@@ -10,13 +11,6 @@ export interface NFTLeftPanelProps {
  * NFT Left Panel Component
  */
 export const NFTLeftPanel: React.FC<NFTLeftPanelProps> = ({ nft }) => {
-  // Format IPFS image URL
-  const getImageUrl = (ipfsUrl: string) => {
-    if (ipfsUrl.startsWith('ipfs://')) {
-      return ipfsUrl.replace('ipfs://', 'https://ipfs.io/ipfs/');
-    }
-    return ipfsUrl;
-  };
 
   return (
     <div className="space-y-6">

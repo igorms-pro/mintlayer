@@ -5,6 +5,7 @@ import { useNFTBalance } from '@/hooks/useNFTBalance';
 import { useClaimStatus } from '@/hooks/useClaimStatus';
 import { useWeb3 } from '@/hooks/useWeb3';
 import type { NFT } from '@/types/nft';
+import { getImageUrl } from '@/utils/ipfs';
 
 export interface NFTCardProps {
   nft: NFT;
@@ -17,7 +18,7 @@ export interface NFTCardProps {
 
 export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
   const navigate = useNavigate();
-  
+
   // Hooks for NFT data
   const { balance } = useNFTBalance(nft.id);
   const { canClaim, canClaimReason, remainingClaims } = useClaimStatus(nft.id);
@@ -35,17 +36,8 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
     }
   };
 
-  // Format IPFS image URL
-  const getImageUrl = (ipfsUrl: string) => {
-    if (ipfsUrl.startsWith('ipfs://')) {
-      return ipfsUrl.replace('ipfs://', 'https://ipfs.io/ipfs/');
-    }
-    return ipfsUrl;
-  };
-
   return (
     <div className="group relative bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 overflow-hidden">
-      {/* NFT Image */}
       <div className="aspect-square overflow-hidden bg-gray-100">
         <img
           src={getImageUrl(nft.metadata.image)}
@@ -55,9 +47,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
         />
       </div>
 
-      {/* Content */}
       <div className="p-4">
-        {/* Title and Badge */}
         <div className="flex items-start justify-between mb-2">
           <h3 className="text-lg font-semibold text-gray-900 truncate flex-1">
             {nft.metadata.name}
@@ -68,16 +58,11 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
             </span>
           )}
         </div>
-
-        {/* Description - Shortened for gallery */}
         <p className="sm:text-base text-sm text-grey-primary mb-4 line-clamp-2 font-normal leading-6 tracking-normal">
-          {nft.metadata.description.length > 80 
+          {nft.metadata.description.length > 80
             ? `${nft.metadata.description.substring(0, 80)}...`
-            : nft.metadata.description
-          }
+            : nft.metadata.description}
         </p>
-
-        {/* Action Buttons */}
         <div className="space-y-3">
           <Button
             onClick={handleClaim}
@@ -89,7 +74,6 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
           >
             {mintState.isPending ? 'Claiming...' : 'Claim NFT'}
           </Button>
-          
           <Button
             onClick={() => navigate(`/nft/${nft.id}`)}
             variant="outline"
@@ -100,22 +84,18 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
           </Button>
         </div>
 
-        {/* Claim Status */}
         {!canClaim && canClaimReason && (
           <p className="mt-2 text-xs text-gray-500 text-center">
             {canClaimReason}
           </p>
         )}
 
-        {/* Remaining Claims */}
         {remainingClaims > 0 && (
           <p className="mt-2 text-xs text-blue-600 text-center">
             {remainingClaims} claim{remainingClaims > 1 ? 's' : ''} remaining
           </p>
         )}
       </div>
-
-      {/* Success State */}
       {mintState.isSuccess && (
         <div className="absolute inset-0 bg-green-50 border-2 border-green-500 flex items-center justify-center">
           <div className="text-center">
@@ -126,4 +106,4 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
       )}
     </div>
   );
-}; 
+};

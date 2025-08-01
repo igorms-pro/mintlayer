@@ -43,6 +43,6 @@ describe('App', () => {
     );
     
     const container = screen.getByTestId('app-container');
-    expect(container).toHaveClass('min-h-screen', 'bg-gray-50');
+    expect(container).toHaveClass('min-h-screen', 'bg-white');
   });
 }); 
