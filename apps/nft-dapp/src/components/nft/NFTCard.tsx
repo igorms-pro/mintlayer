@@ -21,7 +21,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
 
   // Hooks for NFT data
   const { balance } = useNFTBalance(nft.id);
-  const { canClaim, canClaimReason, remainingClaims } = useClaimStatus(nft.id);
+  const { canClaim, canClaimReason } = useClaimStatus(nft.id);
   const { mint, mintState } = useWeb3();
 
   // Handle claim button click
@@ -90,11 +90,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
           </p>
         )}
 
-        {remainingClaims > 0 && (
-          <p className="mt-2 text-xs text-blue-600 text-center">
-            {remainingClaims} claim{remainingClaims > 1 ? 's' : ''} remaining
-          </p>
-        )}
+
       </div>
       {mintState.isSuccess && (
         <div className="absolute inset-0 bg-green-50 border-2 border-green-500 flex items-center justify-center">

@@ -1,2 +1,3 @@
 export { Button } from './Button';
-export { Loader } from './Loader'; 
+export { Loader } from './Loader';
+export { Divider } from './Divider'; 

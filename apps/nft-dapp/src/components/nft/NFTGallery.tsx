@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNFTs } from '@/hooks/useNFTs';
 import { NFTCard } from './NFTCard';
+import { Loader } from '@/components/ui';
 import type { NFT } from '@/types/nft';
 
 export interface NFTGalleryProps {
@@ -26,21 +27,7 @@ export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
         <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
           KILN NFT Collection
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[...Array(8)].map((_, index) => (
-            <div
-              key={index}
-              className="bg-white border border-gray-200 animate-pulse"
-            >
-              <div className="aspect-square bg-gray-200" />
-              <div className="p-4">
-                <div className="h-4 bg-gray-200 rounded mb-2" />
-                <div className="h-3 bg-gray-200 rounded mb-4" />
-                <div className="h-10 bg-gray-200 rounded" />
-              </div>
-            </div>
-          ))}
-        </div>
+        <Loader size="lg" className="py-20" />
       </div>
     );
   }
@@ -97,7 +84,7 @@ export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          KILN NFT Collection
+          KILN NFT Collection ({nfts.length})
         </h1>
         <p className="text-gray-600">
           Discover and claim your unique KILN NFTs
@@ -113,13 +100,6 @@ export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
             onClaim={handleNFTClaim}
           />
         ))}
-      </div>
-
-      {/* Collection Stats */}
-      <div className="mt-12 text-center">
-        <p className="text-sm text-gray-500">
-          {nfts.length} NFT{nfts.length !== 1 ? 's' : ''} in collection
-        </p>
       </div>
     </div>
   );

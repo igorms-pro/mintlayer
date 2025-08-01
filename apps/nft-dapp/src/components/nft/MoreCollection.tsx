@@ -45,7 +45,7 @@ export const MoreCollection: React.FC<MoreCollectionProps> = ({
   }
 
   return (
-    <div className="mt-18">
+    <div className="mt-8 lg:mt-18">
       <h2 className="text-xl font-semibold text-black-secondary mb-6">
         More from this collection
       </h2>

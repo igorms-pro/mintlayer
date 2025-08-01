@@ -1,8 +1,11 @@
-import React from 'react';
-import { Button } from '@/components/ui/Button';
+import React, { useEffect } from 'react';
+import { Button, Divider } from '@/components/ui';
 import { useNFTBalance } from '@/hooks/useNFTBalance';
 import { useClaimStatus } from '@/hooks/useClaimStatus';
 import { useWeb3 } from '@/hooks/useWeb3';
+import toast from 'react-hot-toast';
+import { TOAST_CONFIG } from '@/config/constants';
+import { KilnCard } from './index';
 import type { NFT } from '@/types/nft';
 
 export interface NFTDetailsCardProps {
@@ -15,9 +18,50 @@ export interface NFTDetailsCardProps {
  */
 export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
   // Hooks for NFT data
-  const { balance } = useNFTBalance(nft.id);
+  const { balance, refetch: refetchBalance } = useNFTBalance(nft.id);
   const { canClaim, canClaimReason, remainingClaims } = useClaimStatus(nft.id);
-  const { mint, mintState } = useWeb3();
+  const { mint, mintState, resetMintState } = useWeb3();
+
+  // Handle toast notifications and balance updates based on mint state
+  useEffect(() => {
+    // Transaction submitted
+    if (mintState.isPending && mintState.txHash) {
+      toast('Transaction submitted! Waiting for confirmation...', {
+        icon: '⏳',
+        duration: TOAST_CONFIG.DURATION,
+        id: 'transaction-pending',
+      });
+    }
+    
+    // Transaction confirmed
+    if (mintState.isSuccess) {
+      console.log('Transaction confirmed! Refetching balance...');
+      
+      // Dismiss the pending toast
+      toast.dismiss('transaction-pending');
+      
+      // Add a small delay to ensure blockchain state is updated
+      setTimeout(() => {
+        refetchBalance();
+      }, 1000);
+      
+      toast.success(`Successfully claimed ${nft.metadata.name}!`, {
+        duration: TOAST_CONFIG.DURATION,
+      });
+    }
+    
+    // Transaction failed
+    if (mintState.isError) {
+      // Dismiss the pending toast if it exists
+      toast.dismiss('transaction-pending');
+      
+      toast.error('Transaction cancelled or failed. Please try again.', {
+        duration: TOAST_CONFIG.DURATION,
+      });
+    }
+  }, [mintState.isPending, mintState.isSuccess, mintState.isError, mintState.txHash, refetchBalance, nft.metadata.name]);
+
+
 
   // Handle claim button click
   const handleClaim = async () => {
@@ -26,12 +70,65 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
         await mint(nft);
       } catch (error) {
         console.error('Failed to claim NFT:', error);
+        toast.error('Transaction cancelled or failed. Please try again.', {
+          duration: TOAST_CONFIG.DURATION,
+        });
       }
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6">
+      {/* Mobile: Claim section first for better UX */}
+      <div className="lg:hidden space-y-3">
+        <div className="flex flex-col space-y-2">
+          <span className="px-2 py-0.5 bg-black-primary text-white text-xs font-medium w-fit">
+            Free Mint
+          </span>
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-semibold text-black-secondary leading-8">
+              Ξ 0 ETH
+            </span>
+            <Button
+              onClick={handleClaim}
+              variant="primary"
+              size="lg"
+              loading={mintState.isPending}
+              disabled={!canClaim || mintState.isPending}
+              className="h-10"
+            >
+              {mintState.isPending ? 'Claiming...' : 'Claim Now'}
+            </Button>
+          </div>
+        </div>
+        {!canClaim && canClaimReason && (
+          <p className="text-sm text-grey-primary text-center">
+            {canClaimReason}
+          </p>
+        )}
+        {canClaim && (
+          <p className="text-sm text-green-600 text-center">
+            {remainingClaims === 999 ? 'Unlimited claims available' : `${remainingClaims} claim${remainingClaims > 1 ? 's' : ''} remaining`}
+          </p>
+        )}
+        {mintState.isError && (
+          <p className="text-sm text-red-600 text-center">
+            Error: {mintState.error?.message || 'Transaction failed'}
+          </p>
+        )}
+        {mintState.isPending && !mintState.isSuccess && (
+          <div className="text-sm text-blue-600 text-center">
+            <p>Transaction submitted! Check MetaMask for confirmation...</p>
+            <button 
+              onClick={resetMintState}
+              className="text-xs text-gray-500 underline mt-1"
+            >
+              Reset if failed
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-black-secondary leading-8">
@@ -72,53 +169,74 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
           </div>
         </div>
       )}
-      <div className="border-t border-grey-secondary my-6"></div>
-      <div className="space-y-4">
-        <div className="flex flex-col space-y-2">
-          <span className="px-2 py-0.5 bg-black-primary text-white text-xs font-medium w-fit">
-            Free Mint
-          </span>
-          <span className="text-2xl font-semibold text-black-secondary leading-8">
-            Ξ 0 ETH
-          </span>
-        </div>
-        <Button
-          onClick={handleClaim}
-          variant="primary"
-          size="xl"
-          loading={mintState.isPending}
-          disabled={!canClaim || mintState.isPending}
-          className="w-full"
-        >
-          {mintState.isPending ? 'Claiming...' : 'Claim Now'}
-        </Button>
-        {!canClaim && canClaimReason && (
-          <p className="text-sm text-grey-primary text-center">
-            {canClaimReason}
-          </p>
-        )}
-        {remainingClaims > 0 && (
-          <p className="text-sm text-blue-600 text-center">
-            {remainingClaims} claim{remainingClaims > 1 ? 's' : ''} remaining
-          </p>
-        )}
+      
+      {/* Mobile: Divider after metadata */}
+      <div className="lg:hidden mt-6">
+        <Divider />
       </div>
-      {mintState.isSuccess && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-none max-w-md mx-4 text-center">
-            <div className="text-green-600 text-4xl mb-4">✓</div>
-            <h3 className="text-xl font-bold text-black-primary mb-2">
-              Claimed Successfully!
-            </h3>
-            <p className="text-grey-primary mb-6">
-              Your NFT has been claimed and added to your wallet.
-            </p>
-            <Button variant="primary">
-              Back to Gallery
-            </Button>
+      
+      {/* Desktop: Claim section at bottom */}
+      <div className="hidden lg:block">
+        <Divider />
+        <div className="space-y-4">
+          <div className="flex flex-col space-y-2">
+            <span className="px-2 py-0.5 bg-black-primary text-white text-xs font-medium w-fit">
+              Free Mint
+            </span>
+            <span className="text-2xl font-semibold text-black-secondary leading-8">
+              Ξ 0 ETH
+            </span>
           </div>
+          <Button
+            onClick={handleClaim}
+            variant="primary"
+            size="xl"
+            loading={mintState.isPending}
+            disabled={!canClaim || mintState.isPending}
+            className="w-full"
+          >
+            {mintState.isPending ? 'Claiming...' : 'Claim Now'}
+          </Button>
+          {!canClaim && canClaimReason && (
+            <p className="text-sm text-grey-primary text-center">
+              {canClaimReason}
+            </p>
+          )}
+          {canClaim && (
+            <p className="text-sm text-green-600 text-center">
+              {remainingClaims === 999 ? 'Unlimited claims available' : `${remainingClaims} claim${remainingClaims > 1 ? 's' : ''} remaining`}
+            </p>
+          )}
+          {mintState.isError && (
+            <p className="text-sm text-red-600 text-center">
+              Error: {mintState.error?.message || 'Transaction failed'}
+            </p>
+          )}
+          {mintState.isPending && !mintState.isSuccess && (
+            <div className="text-sm text-blue-600 text-center">
+              <p>Transaction submitted! Check MetaMask for confirmation...</p>
+              <button 
+                onClick={resetMintState}
+                className="text-xs text-gray-500 underline mt-1"
+              >
+                Reset if failed
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
+      
+      {/* Success state - now handled by toast notifications */}
+      
+      {/* Kiln Card - Only visible on mobile */}
+      <div className="lg:hidden mt-8">
+        <KilnCard />
+      </div>
+      
+      {/* Mobile: Divider after KilnCard */}
+      <div className="lg:hidden mt-6">
+        <Divider />
+      </div>
     </div>
   );
 }; 

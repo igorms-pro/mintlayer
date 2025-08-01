@@ -52,6 +52,12 @@ export const SUCCESS_MESSAGES = {
   NFT_CLAIMED: 'NFT claimed successfully!',
 } as const;
 
+// Toast Configuration
+export const TOAST_CONFIG = {
+  DURATION: 8000, // 8 seconds
+  POSITION: 'top-right' as const,
+} as const;
+
 // Time formatting helpers
 export const TIME_FORMATS = {
   SECONDS: (s: number) => s * 1000,

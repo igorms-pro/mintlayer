@@ -36,17 +36,17 @@ export const KilnCard: React.FC = () => {
         Hundreds of companies use Kiln to earn rewards on their digital assets, or to whitelabel earning functionality into their products.
       </p>
       
-      <div className="flex items-center space-x-4 mb-4">
+      <div className="flex flex-wrap items-center gap-4 mb-4">
         {KILN_SOCIAL_LINKS.map((social) => (
           <a 
             key={social.name}
             href={social.url} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="flex items-center text-base text-black-secondary hover:text-black-primary hover:scale-105 transition-all duration-150 ease-in-out"
+            className="flex items-center text-sm text-black-secondary hover:text-black-primary hover:scale-105 transition-all duration-150 ease-in-out"
           >
-            <img src={social.icon} alt={social.name} className="w-5 h-5 mr-2" />
-            {social.label}
+            <img src={social.icon} alt={social.name} className="w-4 h-4 mr-1" />
+            <span className="hidden sm:inline">{social.label}</span>
           </a>
         ))}
       </div>
