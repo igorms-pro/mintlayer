@@ -2,23 +2,12 @@ import React from 'react';
 import { useNFTs } from '@/hooks/useNFTs';
 import { NFTCard } from './NFTCard';
 import { Loader } from '@/components/ui';
-import type { NFT } from '@/types/nft';
-
-export interface NFTGalleryProps {
-  onNFTClaim?: (nft: NFT) => void;
-}
 
 /**
  * NFT Gallery Component
  */
-export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
+export const NFTGallery: React.FC = () => {
   const { nfts, isLoading, isError, error } = useNFTs();
-
-  // Handle NFT claim
-  const handleNFTClaim = (nft: NFT) => {
-    console.log('NFT claimed:', nft);
-    onNFTClaim?.(nft);
-  };
 
   // Loading state
   if (isLoading) {
@@ -78,7 +67,7 @@ export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
     );
   }
 
-  // normal state
+  // Normal state
   return (
     <div className="px-4 sm:px-8 py-8" data-testid="nft-gallery">
       {/* Header */}
@@ -87,7 +76,7 @@ export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
           KILN NFT Collection ({nfts.length})
         </h1>
         <p className="text-gray-600" data-testid="gallery-subtitle">
-          Discover and claim your unique KILN NFTs
+          Discover and explore your unique KILN NFTs
         </p>
       </div>
 
@@ -97,7 +86,6 @@ export const NFTGallery: React.FC<NFTGalleryProps> = ({ onNFTClaim }) => {
           <NFTCard
             key={nft.id}
             nft={nft}
-            onClaim={handleNFTClaim}
           />
         ))}
       </div>

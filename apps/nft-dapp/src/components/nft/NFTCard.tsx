@@ -2,39 +2,22 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { useNFTBalance } from '@/hooks/useNFTBalance';
-import { useClaimStatus } from '@/hooks/useClaimStatus';
-import { useWeb3 } from '@/hooks/useWeb3';
 import type { NFT } from '@/types/nft';
 import { getImageUrl } from '@/utils/ipfs';
 
 export interface NFTCardProps {
   nft: NFT;
-  onClaim?: (nft: NFT) => void;
 }
 
 /**
  * NFT Card Component
+ * Displays NFT information with a "View Details" button
  */
-
-export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
+export const NFTCard: React.FC<NFTCardProps> = ({ nft }) => {
   const navigate = useNavigate();
 
-  // Hooks for NFT data
+  // Hook for NFT balance display
   const { balance, isLoading: balanceLoading, isError: balanceError } = useNFTBalance(nft.id);
-  const { canClaim, canClaimReason } = useClaimStatus(nft.id);
-  const { mint, mintState } = useWeb3();
-
-  // Handle claim button click
-  const handleClaim = async () => {
-    if (canClaim && !mintState.isPending) {
-      try {
-        await mint(nft);
-        onClaim?.(nft);
-      } catch (error) {
-        console.error('Failed to claim NFT:', error);
-      }
-    }
-  };
 
   return (
     <div className="group relative bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 overflow-hidden" data-testid="nft-card">
@@ -69,50 +52,23 @@ export const NFTCard: React.FC<NFTCardProps> = ({ nft, onClaim }) => {
             </span>
           )}
         </div>
+        
         <p className="sm:text-base text-sm text-grey-primary mb-4 line-clamp-2 font-normal leading-6 tracking-normal" data-testid="nft-description">
           {nft.metadata.description.length > 80
             ? `${nft.metadata.description.substring(0, 80)}...`
             : nft.metadata.description}
         </p>
-        <div className="space-y-3">
-          <Button
-            onClick={handleClaim}
-            variant="primary"
-            size="md"
-            loading={mintState.isPending}
-            disabled={!canClaim || mintState.isPending}
-            className="w-full"
-            data-testid="claim-button"
-          >
-            {mintState.isPending ? 'Claiming...' : 'Claim NFT'}
-          </Button>
-          <Button
-            onClick={() => navigate(`/nft/${nft.id}`)}
-            variant="outline"
-            size="md"
-            className="w-full"
-            data-testid="view-details-button"
-          >
-            View Details
-          </Button>
-        </div>
-
-        {!canClaim && canClaimReason && (
-          <p className="mt-2 text-xs text-gray-500 text-center" data-testid="claim-error-message">
-            {canClaimReason}
-          </p>
-        )}
-
-
+        
+        <Button
+          onClick={() => navigate(`/nft/${nft.id}`)}
+          variant="primary"
+          size="md"
+          className="w-full"
+          data-testid="view-details-button"
+        >
+          View Details
+        </Button>
       </div>
-      {mintState.isSuccess && (
-        <div className="absolute inset-0 bg-green-50 border-2 border-green-500 flex items-center justify-center" data-testid="claim-success-overlay">
-          <div className="text-center">
-            <div className="text-green-600 text-2xl mb-2">✓</div>
-            <p className="text-green-800 font-medium">Claimed Successfully!</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

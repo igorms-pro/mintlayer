@@ -6,39 +6,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NFTCard } from '@/components/nft/NFTCard';
 import type { NFT } from '@/types/nft';
 
-// Mock all hooks at the top level with simple implementations
+// Mock hooks with simple implementations
 vi.mock('@/hooks/useNFTBalance', () => ({
   useNFTBalance: () => ({
     balance: 0,
     isLoading: false,
     isError: false,
-    error: null,
     refetch: vi.fn(),
-  }),
-}));
-
-vi.mock('@/hooks/useClaimStatus', () => ({
-  useClaimStatus: () => ({
-    canClaim: true,
-    canClaimReason: null,
-    remainingClaims: 999,
-  }),
-}));
-
-vi.mock('@/hooks/useWeb3', () => ({
-  useWeb3: () => ({
-    address: '0x1234567890123456789012345678901234567890',
-    isConnected: true,
-    mint: vi.fn(),
-    mintState: {
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-    },
-    resetMintState: vi.fn(),
-    isCorrectChain: true,
   }),
 }));
 
@@ -102,13 +76,14 @@ describe('NFTCard Component', () => {
     expect(screen.getByTestId('nft-name')).toHaveTextContent('KILN #1');
     expect(screen.getByTestId('nft-description')).toHaveTextContent(/A unique KILN NFT/);
     expect(screen.getByTestId('nft-image')).toBeInTheDocument();
+    expect(screen.getByTestId('view-details-button')).toBeInTheDocument();
   });
 
-  it('shows claim button when user can claim', () => {
+  it('shows view details button', () => {
     render(<NFTCard nft={mockNFT} />, { wrapper: createWrapper() });
 
-    expect(screen.getByTestId('claim-button')).toBeInTheDocument();
     expect(screen.getByTestId('view-details-button')).toBeInTheDocument();
+    expect(screen.getByTestId('view-details-button')).toHaveTextContent('View Details');
   });
 
   it('truncates long descriptions', () => {
@@ -138,7 +113,7 @@ describe('NFTCard Component', () => {
     render(<NFTCard nft={nftWithoutAttributes} />, { wrapper: createWrapper() });
 
     expect(screen.getByTestId('nft-name')).toHaveTextContent('KILN #1');
-    expect(screen.getByTestId('claim-button')).toBeInTheDocument();
+    expect(screen.getByTestId('view-details-button')).toBeInTheDocument();
   });
 
   it('displays NFT image with correct alt text', () => {
@@ -149,7 +124,7 @@ describe('NFTCard Component', () => {
     expect(image).toHaveAttribute('alt', 'KILN #1');
   });
 
-  it('renders NFT attributes when present', () => {
+  it('renders NFT card with attributes data', () => {
     render(<NFTCard nft={mockNFT} />, { wrapper: createWrapper() });
 
     // The NFTCard component doesn't display attributes in the card view
@@ -157,6 +132,6 @@ describe('NFTCard Component', () => {
     // This test verifies the card renders correctly with attributes data
     expect(screen.getByTestId('nft-card')).toBeInTheDocument();
     expect(screen.getByTestId('nft-name')).toHaveTextContent('KILN #1');
-    expect(screen.getByTestId('claim-button')).toBeInTheDocument();
+    expect(screen.getByTestId('view-details-button')).toBeInTheDocument();
   });
 }); 

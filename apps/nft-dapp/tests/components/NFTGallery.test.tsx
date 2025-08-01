@@ -80,7 +80,7 @@ describe('NFTGallery Component', () => {
 
     expect(screen.getByTestId('nft-gallery')).toBeInTheDocument();
     expect(screen.getByTestId('gallery-title')).toHaveTextContent('KILN NFT Collection (2)');
-    expect(screen.getByTestId('gallery-subtitle')).toHaveTextContent('Discover and claim your unique KILN NFTs');
+    expect(screen.getByTestId('gallery-subtitle')).toHaveTextContent('Discover and explore your unique KILN NFTs');
   });
 
   it('renders NFT grid with cards', () => {
