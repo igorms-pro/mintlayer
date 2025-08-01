@@ -79,7 +79,7 @@ export interface ClaimCondition {
   quantityLimitPerWallet: number;
   currency: string;
   pricePerToken: bigint;
-  allowlistMerkleRoot: string;
+  merkleRoot: string;
 }
 
 export interface ClaimError {

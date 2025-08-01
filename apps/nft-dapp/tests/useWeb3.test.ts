@@ -28,6 +28,12 @@ vi.mock('wagmi', () => ({
   useWriteContract: () => ({
     writeContractAsync: vi.fn(),
   }),
+  useWaitForTransactionReceipt: () => ({
+    data: null,
+    isLoading: false,
+    isError: false,
+    error: null,
+  }),
 }));
 
 // Mock viem

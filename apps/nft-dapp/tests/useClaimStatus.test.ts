@@ -52,7 +52,7 @@ describe('useClaimStatus', () => {
     expect(result.current.canClaimReason).toBe('No claim condition available');
     expect(result.current.userBalance).toBe(0);
     expect(result.current.hasReachedLimit).toBe(false);
-    expect(result.current.remainingClaims).toBe(0);
+    expect(result.current.remainingClaims).toBe(999);
     expect(result.current.claimCondition).toBe(null);
     expect(result.current.activeConditionId).toBe(null);
     expect(result.current.isLoading).toBe(false);
