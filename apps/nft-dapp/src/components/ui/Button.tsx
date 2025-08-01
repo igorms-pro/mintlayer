@@ -2,7 +2,7 @@ import React from 'react';
 
 const buttonVariants = {
   variant: {
-    primary: 'bg-[#171717] text-white hover:bg-gray-800 active:bg-gray-900 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.09)]',
+    primary: 'bg-black-primary text-white hover:bg-gray-800 active:bg-gray-900 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.09)]',
     secondary: 'bg-white text-black border border-gray-300 hover:bg-gray-50 active:bg-gray-100',
     outline: 'bg-transparent text-black border border-black hover:bg-black hover:text-white active:bg-gray-800',
   },

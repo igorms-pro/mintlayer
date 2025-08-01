@@ -1,14 +1,17 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --font-montserrat: "Montserrat", system-ui, sans-serif;
+  --color-grey-primary: #6a7282;
+  --color-grey-secondary: #e5e5e5;
+  --color-black-primary: #171717;
+  --font-montserrat: 'Montserrat', system-ui, sans-serif;
 }
 
 @layer base {
   html {
     font-family: var(--font-montserrat);
   }
-  
+
   body {
     margin: 0;
     min-height: 100vh;
@@ -28,5 +31,4 @@
   /* .btn-primary {
     @apply px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium;
   } */
- 
 }
