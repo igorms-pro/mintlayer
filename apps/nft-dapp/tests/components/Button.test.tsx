@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { Button } from '../../src/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 
 describe('Button Component', () => {
   it('renders button with children', () => {
@@ -145,7 +145,7 @@ describe('Button Component', () => {
   });
 
   it('handles empty children', () => {
-    render(<Button></Button>);
+    render(<Button>{null}</Button>);
     const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();
     expect(button.textContent).toBe('');
