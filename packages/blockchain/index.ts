@@ -138,15 +138,37 @@ export async function deposit(
     
     // 6. Estimate gas for the transaction using client.estimateContractGas
     //    - Viem docs: https://viem.sh/docs/contract/estimateContractGas
-   
+    const gas = await client.estimateContractGas({
+        address: vault,
+        abi: [{
+            name: "deposit",
+            type: "function",
+            inputs: [
+                { name: "assets", type: "uint256" },
+                { name: "receiver", type: "address" },
+            ],
+            outputs: [{ name: "shares", type: "uint256" }],
+            stateMutability: "nonpayable",
+        }],
+        functionName: "deposit",
+        args: [amount, wallet],
+        account: wallet,
+    });
+    
     // 7. Return the transaction object with all required fields
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#deposit
+
+    
+    // Validate that all required transaction fields are properly set
+    if (!data || !wallet || !vault || gas === undefined) {
+        throw new Error("Invalid transaction data");
+    }
     
     return {
         data,
         from: wallet,
         to: vault,
         value: 0n,
-        gas: 0n,
+        gas,
     };
 }
