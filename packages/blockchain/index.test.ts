@@ -24,15 +24,18 @@ describe("deposit function - steps 1-4", () => {
             estimateContractGas: mock(async () => 21000n),
         };
 
-        try {
-            await deposit(mockClient as any, {
-                wallet: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-                vault: "0x0987654321098765432109876543210987654321",
-                amount: 1000000n,
-            });
-        } catch (error: any) {
-            expect(error.message).toContain("only steps 1-4 done");
-        }
+        const transaction = await deposit(mockClient as any, {
+            wallet: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            vault: "0x0987654321098765432109876543210987654321",
+            amount: 1000000n,
+        });
+
+        expect(transaction).toBeDefined();
+        expect(transaction.data).toMatch(/^0x[a-fA-F0-9]+$/);
+        expect(transaction.from).toBe("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
+        expect(transaction.to).toBe("0x0987654321098765432109876543210987654321");
+        expect(transaction.value).toBe(0n);
+        expect(transaction.gas).toBe(0n);
 
         // Verify that readContract was called for asset
         expect(mockClient.readContract).toHaveBeenCalledWith({

@@ -1,4 +1,5 @@
 import type { PublicClient } from "viem";
+import { encodeFunctionData } from "viem";
 
 export type DepositParams = {
     wallet: `0x${string}`;
@@ -120,12 +121,32 @@ export async function deposit(
     
     // 5. Build the deposit transaction data using encodeFunctionData
     //    - Viem docs: https://viem.sh/docs/contract/encodeFunctionData
-   
+    const data = encodeFunctionData({
+        abi: [{
+            name: "deposit",
+            type: "function",
+            inputs: [
+                { name: "assets", type: "uint256" },
+                { name: "receiver", type: "address" },
+            ],
+            outputs: [{ name: "shares", type: "uint256" }],
+            stateMutability: "nonpayable",
+        }],
+        functionName: "deposit",
+        args: [amount, wallet],
+    });
+    
     // 6. Estimate gas for the transaction using client.estimateContractGas
     //    - Viem docs: https://viem.sh/docs/contract/estimateContractGas
    
     // 7. Return the transaction object with all required fields
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#deposit
     
-    throw new Error("Not implemented yet - only steps 1-4 done");
+    return {
+        data,
+        from: wallet,
+        to: vault,
+        value: 0n,
+        gas: 0n,
+    };
 }
