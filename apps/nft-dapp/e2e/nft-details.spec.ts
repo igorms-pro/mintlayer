@@ -24,6 +24,71 @@ test.describe('NFT Details Page E2E Tests', () => {
         VITE_ENV: 'test'
       };
     });
+
+    // Mock API responses for CI environment
+    await page.route('**/api/nfts**', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          {
+            id: '1',
+            metadata: {
+              name: 'KILN #1',
+              description: 'Test NFT 1',
+              image: 'ipfs://QmTest1'
+            }
+          },
+          {
+            id: '2', 
+            metadata: {
+              name: 'KILN #2',
+              description: 'Test NFT 2',
+              image: 'ipfs://QmTest2'
+            }
+          },
+          {
+            id: '3',
+            metadata: {
+              name: 'KILN #3',
+              description: 'Test NFT 3',
+              image: 'ipfs://QmTest3'
+            }
+          },
+          {
+            id: '4',
+            metadata: {
+              name: 'KILN #4',
+              description: 'Test NFT 4',
+              image: 'ipfs://QmTest4'
+            }
+          }
+        ])
+      });
+    });
+
+    // Mock individual NFT API calls
+    await page.route('**/api/nfts/*', async route => {
+      const url = route.request().url();
+      const nftId = url.split('/').pop();
+      
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: nftId,
+          metadata: {
+            name: `KILN #${nftId}`,
+            description: `Test NFT ${nftId}`,
+            image: `ipfs://QmTest${nftId}`,
+            attributes: [
+              { trait_type: 'Rarity', value: 'Common' },
+              { trait_type: 'Type', value: 'Test' }
+            ]
+          }
+        })
+      });
+    });
   });
 
   test('Complete NFT Details Page Interactive Flow', async ({ page }) => {
@@ -31,8 +96,24 @@ test.describe('NFT Details Page E2E Tests', () => {
     await page.goto('http://localhost:5173');
     await page.waitForLoadState('networkidle');
     
-    // Wait for NFTs to load
-    await page.waitForSelector('[data-testid="nft-card"]', { timeout: 10000 });
+    // Wait for NFTs to load with better error handling for CI
+    try {
+      await page.waitForSelector('[data-testid="nft-card"]', { timeout: 15000 });
+    } catch (error) {
+      console.log('NFT cards not found, checking for loading state...');
+      // Check if we're in a loading state
+      const loadingElement = page.locator('[data-testid="loader"]');
+      if (await loadingElement.isVisible()) {
+        console.log('App is still loading, waiting a bit more...');
+        await page.waitForTimeout(5000);
+        await page.waitForSelector('[data-testid="nft-card"]', { timeout: 10000 });
+      } else {
+        // Check if we have any content at all
+        const bodyText = await page.textContent('body');
+        console.log('Page content:', bodyText?.substring(0, 200));
+        throw error;
+      }
+    }
     
     // Click "View Details" on first NFT
     const firstNFTDetailsButton = page.locator('[data-testid="nft-card"]').first().locator('text=View Details');
@@ -173,8 +254,24 @@ test.describe('NFT Details Page E2E Tests', () => {
     await page.goto('http://localhost:5173');
     await page.waitForLoadState('networkidle');
     
-    // Wait for NFTs to load
-    await page.waitForSelector('[data-testid="nft-card"]', { timeout: 10000 });
+    // Wait for NFTs to load with better error handling for CI
+    try {
+      await page.waitForSelector('[data-testid="nft-card"]', { timeout: 15000 });
+    } catch (error) {
+      console.log('NFT cards not found, checking for loading state...');
+      // Check if we're in a loading state
+      const loadingElement = page.locator('[data-testid="loader"]');
+      if (await loadingElement.isVisible()) {
+        console.log('App is still loading, waiting a bit more...');
+        await page.waitForTimeout(5000);
+        await page.waitForSelector('[data-testid="nft-card"]', { timeout: 10000 });
+      } else {
+        // Check if we have any content at all
+        const bodyText = await page.textContent('body');
+        console.log('Page content:', bodyText?.substring(0, 200));
+        throw error;
+      }
+    }
     
     // Click "View Details" on second NFT
     const secondNFTDetailsButton = page.locator('[data-testid="nft-card"]').nth(1).locator('text=View Details');
@@ -266,6 +363,25 @@ test.describe('NFT Details Page E2E Tests', () => {
     // Test loading states during navigation
     await page.goto('http://localhost:5173');
     await page.waitForLoadState('networkidle');
+    
+    // Wait for NFTs to load with better error handling for CI
+    try {
+      await page.waitForSelector('[data-testid="nft-card"]', { timeout: 15000 });
+    } catch (error) {
+      console.log('NFT cards not found, checking for loading state...');
+      // Check if we're in a loading state
+      const loadingElement = page.locator('[data-testid="loader"]');
+      if (await loadingElement.isVisible()) {
+        console.log('App is still loading, waiting a bit more...');
+        await page.waitForTimeout(5000);
+        await page.waitForSelector('[data-testid="nft-card"]', { timeout: 10000 });
+      } else {
+        // Check if we have any content at all
+        const bodyText = await page.textContent('body');
+        console.log('Page content:', bodyText?.substring(0, 200));
+        throw error;
+      }
+    }
     
     // Navigate to NFT details
     await page.locator('[data-testid="nft-card"]').first().locator('text=View Details').click();
