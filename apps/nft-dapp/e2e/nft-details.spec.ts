@@ -95,7 +95,7 @@ test.describe('NFT Details Page E2E Tests', () => {
 
   test('Complete NFT Details Page Interactive Flow', async ({ page }) => {
     // 1. Load gallery and navigate to first NFT
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
     await page.waitForLoadState('networkidle');
     
     // Wait for NFTs to load with better error handling for CI
@@ -255,7 +255,7 @@ test.describe('NFT Details Page E2E Tests', () => {
 
   test('Second NFT Complete Interactive Flow', async ({ page }) => {
     // 1. Load gallery and navigate to second NFT
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
     await page.waitForLoadState('networkidle');
     
     // Wait for NFTs to load with better error handling for CI
@@ -370,7 +370,7 @@ test.describe('NFT Details Page E2E Tests', () => {
       } else {
         // If no back button is visible, navigate directly to gallery
         console.log('No back button visible, navigating directly to gallery...');
-        await page.goto('http://localhost:5173');
+        await page.goto('/');
         await page.waitForLoadState('networkidle');
         await expect(page.locator('[data-testid="gallery-subtitle"]')).toBeVisible();
       }
@@ -379,7 +379,7 @@ test.describe('NFT Details Page E2E Tests', () => {
 
   test('Loading States and Error Handling', async ({ page }) => {
     // Test loading states during navigation
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
     await page.waitForLoadState('networkidle');
     
     // Wait for NFTs to load with better error handling for CI
@@ -418,7 +418,7 @@ test.describe('NFT Details Page E2E Tests', () => {
     await expect(page.locator('h1')).toBeVisible();
     
     // Test error handling by navigating to invalid NFT
-    await page.goto('http://localhost:5173/nft/invalid-nft-id');
+    await page.goto('/nft/invalid-nft-id');
     await page.waitForLoadState('networkidle');
     
     // Wait a bit for any redirects or error states
