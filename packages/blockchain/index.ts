@@ -60,9 +60,26 @@ export async function deposit(
     
     console.log("Asset address:", assetAddress);
 
-    // 2. Check user's balance of the asset using client.readContract
+    // 2. ✅ Check user's balance of the asset using client.readContract
     //    - ERC-20 spec: https://eips.ethereum.org/EIPS/eip-20#balanceof
-   
+    const balance = await client.readContract({
+        address: assetAddress,
+        abi: [{
+            name: "balanceOf",
+            type: "function",
+            inputs: [{ name: "owner", type: "address" }],
+            outputs: [{ name: "", type: "uint256" }],
+            stateMutability: "view",
+        }],
+        functionName: "balanceOf",
+        args: [wallet],
+    });
+    
+    console.log("User balance:", balance);
+    
+    if (balance < amount) {
+        throw new NotEnoughBalanceError();
+    }
     
     // 3. Check user's allowance for the vault using client.readContract
     //    - ERC-20 spec: https://eips.ethereum.org/EIPS/eip-20#allowance
@@ -79,5 +96,5 @@ export async function deposit(
     // 7. Return the transaction object with all required fields
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#deposit
     
-    throw new Error("Not implemented yet - only step 1 done");
+    throw new Error("Not implemented yet - only steps 1-2 done");
 }
