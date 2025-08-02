@@ -58,6 +58,26 @@ jobs:
         with:
           file: apps/nft-dapp/coverage/lcov.info
 
+      - name: Start development server
+        run: |
+          cd apps/nft-dapp
+          pnpm dev > dev.log 2>&1 &
+          echo $! > dev.pid
+          sleep 10
+        env:
+          VITE_REOWN_PROJECT_ID: ${{ secrets.VITE_REOWN_PROJECT_ID }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_NFT_CONTRACT_ADDRESS: ${{ secrets.VITE_NFT_CONTRACT_ADDRESS }}
+          VITE_ENV: test
+
+      - name: Wait for server to be ready
+        run: |
+          cd apps/nft-dapp
+          timeout 60 bash -c 'until curl -f http://localhost:5173 > /dev/null 2>&1; do sleep 2; done'
+          echo "Server is ready!"
+          echo "Server logs:"
+          tail -20 dev.log || echo "No log file found"
+
       - name: Run E2E tests
         run: pnpm --filter nft-dapp playwright:test
         env:
@@ -65,6 +85,15 @@ jobs:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
           VITE_NFT_CONTRACT_ADDRESS: ${{ secrets.VITE_NFT_CONTRACT_ADDRESS }}
           VITE_ENV: test
+
+      - name: Stop development server
+        if: always()
+        run: |
+          cd apps/nft-dapp
+          if [ -f dev.pid ]; then
+            kill $(cat dev.pid) || true
+            rm dev.pid
+          fi
 
       - name: Build application
         run: pnpm --filter nft-dapp build
