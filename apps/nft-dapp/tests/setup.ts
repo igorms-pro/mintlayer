@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
+import React from 'react'
 
 // Mock environment variables for tests
 vi.stubEnv('VITE_REOWN_PROJECT_ID', 'test-project-id')
@@ -46,6 +47,7 @@ vi.mock('wagmi', () => ({
   http: vi.fn(),
   injected: vi.fn(),
   walletConnect: vi.fn(),
+  WagmiProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
 
 // Mock viem

@@ -13,7 +13,6 @@ export const useNFTBalance = (tokenId: string): UseNFTBalanceReturn => {
     data: balance,
     isLoading,
     isError,
-    error,
     refetch
   } = useReadContract({
     address: CONTRACTS.NFT_COLLECTION,
@@ -29,7 +28,6 @@ export const useNFTBalance = (tokenId: string): UseNFTBalanceReturn => {
     balance: balance ? Number(balance) : 0,
     isLoading,
     isError,
-    error,
     refetch,
   };
 }; 

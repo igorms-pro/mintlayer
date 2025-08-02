@@ -43,7 +43,6 @@ describe('useNFTBalance Hook', () => {
     expect(result.current).toHaveProperty('balance');
     expect(result.current).toHaveProperty('isLoading');
     expect(result.current).toHaveProperty('isError');
-    expect(result.current).toHaveProperty('error');
     expect(result.current).toHaveProperty('refetch');
 
     // Test types
@@ -62,7 +61,6 @@ describe('useNFTBalance Hook', () => {
     expect(result.current.balance).toBe(0);
     expect(result.current.isLoading).toBe(false);
     expect(result.current.isError).toBe(false);
-    expect(result.current.error).toBe(null);
   });
 
 

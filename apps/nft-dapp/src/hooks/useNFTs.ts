@@ -5,11 +5,9 @@ import type {
   UseNFTsOptions,
   UseNFTsReturn,
   UseNFTReturn,
-  UseInvalidateNFTsReturn,
 } from '@/types/hooks';
 import { CACHE_TIMES, NETWORK_CONFIG } from '@/config/constants';
 
- 
 /**
  * Hook for fetching and managing NFT collection data
  */
@@ -45,8 +43,6 @@ export const useNFTs = (options: UseNFTsOptions = {}): UseNFTsReturn => {
     isLoading: query.isLoading,
     isError: query.isError,
     error: query.error,
-    refetch: query.refetch,
-    isRefetching: query.isRefetching,
   };
 };
 
@@ -81,20 +77,5 @@ export const useNFT = (id: string | undefined): UseNFTReturn => {
     isLoading: query.isLoading,
     isError: query.isError,
     error: query.error,
-    refetch: query.refetch,
-  };
-};
-
-/**
- * Hook for invalidating NFT cache
- */
-export const useInvalidateNFTs = (): UseInvalidateNFTsReturn => {
-  const queryClient = useQueryClient();
-
-  return {
-    invalidateNFTs: () => queryClient.invalidateQueries({ queryKey: ['nfts'] }),
-    invalidateNFT: (id: string) =>
-      queryClient.invalidateQueries({ queryKey: ['nft', id] }),
-    refetchNFTs: () => queryClient.refetchQueries({ queryKey: ['nfts'] }),
   };
 };

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { 
   useAccount, 
   useWaitForTransactionReceipt,
@@ -8,8 +8,7 @@ import { baseSepolia } from 'wagmi/chains';
 import type { NFT } from '@/types/nft';
 import type {
   MintState,
-  UseWeb3Return,
-  UseTransactionStatusReturn
+  UseWeb3Return
 } from '@/types/hooks';
 import {
   ERC1155_ABI,
@@ -34,8 +33,30 @@ export const useWeb3 = (): UseWeb3Return => {
   // Wagmi hooks - only what we need for minting
   const { address, isConnected, chain } = useAccount();
   const { writeContractAsync } = useWriteContract();
+  
+  // Track transaction status for current mint state
+  const { data: transactionReceipt } = useWaitForTransactionReceipt({
+    hash: mintState.txHash as `0x${string}`,
+    chainId: baseSepolia.id,
+    query: {
+      enabled: !!mintState.txHash,
+      retry: 3,
+      retryDelay: 1000,
+    },
+  });
 
   const isCorrectChain = chain?.id === baseSepolia.id;
+
+  // Update mint state when transaction is confirmed
+  useEffect(() => {
+    if (transactionReceipt && mintState.isPending) {
+      setMintState(prev => ({
+        ...prev,
+        isPending: false,
+        isSuccess: true,
+      }));
+    }
+  }, [transactionReceipt, mintState.isPending]);
 
   // Claim logic (real contract interaction)
   const mint = useCallback(async (nft: NFT) => {
@@ -56,24 +77,21 @@ export const useWeb3 = (): UseWeb3Return => {
     });
 
     try {
-      console.log('Claiming NFT:', nft);
-      
-      // REAL CONTRACT INTERACTION - claim function
+      // claim function
       const txHash = await writeContractAsync({
         address: CONTRACTS.NFT_COLLECTION,
         abi: ERC1155_ABI,
         functionName: 'claim',
-        args: CONTRACT_HELPERS.prepareClaimArgs(nft.id, CONTRACT_CONFIG.DEFAULT_CLAIM_QUANTITY),
-        gas: BigInt(CONTRACT_CONFIG.GAS_LIMIT),
-        value: BigInt(0), // Free claim
+        args: CONTRACT_HELPERS.prepareClaimArgs(nft.id, CONTRACT_CONFIG.DEFAULT_CLAIM_QUANTITY, address),
+        gas: BigInt(300000),
+        value: BigInt(0),
       });
 
-      console.log('Claim transaction hash:', txHash);
-
+      // Set pending state - transaction status will be tracked by useWaitForTransactionReceipt
       setMintState({
         isIdle: false,
-        isPending: false,
-        isSuccess: true,
+        isPending: true,
+        isSuccess: false,
         isError: false,
         error: null,
         txHash,
@@ -81,6 +99,7 @@ export const useWeb3 = (): UseWeb3Return => {
 
     } catch (error) {
       console.error('Claim error:', error);
+      
       setMintState({
         isIdle: false,
         isPending: false,
@@ -98,44 +117,14 @@ export const useWeb3 = (): UseWeb3Return => {
       isSuccess: false,
       isError: false,
       error: null,
+      txHash: undefined,
     });
   }, []);
 
   return {
-    // Account state (read-only for RainbowKit)
-    address,
-    isConnected,
-    
     // Minting
     mintState,
     mint,
     resetMintState,
-    
-    // Chain validation
-    isCorrectChain,
-  };
-};
-
-/**
- * Hook for transaction status tracking
- */
-export const useTransactionStatus = (txHash: string | undefined): UseTransactionStatusReturn => {
-  const { data, isLoading, isError, error } = useWaitForTransactionReceipt({
-    hash: txHash as `0x${string}`,
-    chainId: baseSepolia.id,
-    query: {
-      enabled: !!txHash,
-      retry: 3,
-      retryDelay: 1000,
-    },
-  });
-
-  return {
-    receipt: data,
-    isConfirming: isLoading,
-    isConfirmed: !!data,
-    isError,
-    error,
-    confirmations: data?.blockNumber ? Number(data.blockNumber) : 0,
   };
 };
