@@ -44,7 +44,7 @@ export async function deposit(
     { wallet, vault, amount }: DepositParams,
 ): Promise<Transaction> {
     // TODO: Steps
-    // 1. ✅ Get the asset address from the vault using client.readContract
+    // 1. Get the asset address from the vault using client.readContract
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#asset
     const assetAddress = await client.readContract({
         address: vault,
@@ -58,9 +58,7 @@ export async function deposit(
         functionName: "asset",
     });
     
-    console.log("Asset address:", assetAddress);
-
-    // 2. ✅ Check user's balance of the asset using client.readContract
+    // 2. Check user's balance of the asset using client.readContract
     //    - ERC-20 spec: https://eips.ethereum.org/EIPS/eip-20#balanceof
     const balance = await client.readContract({
         address: assetAddress,
@@ -75,15 +73,32 @@ export async function deposit(
         args: [wallet],
     });
     
-    console.log("User balance:", balance);
-    
     if (balance < amount) {
         throw new NotEnoughBalanceError();
     }
     
     // 3. Check user's allowance for the vault using client.readContract
     //    - ERC-20 spec: https://eips.ethereum.org/EIPS/eip-20#allowance
-   
+    const allowance = await client.readContract({
+        address: assetAddress,
+        abi: [{
+            name: "allowance",
+            type: "function",
+            inputs: [
+                { name: "owner", type: "address" },
+                { name: "spender", type: "address" },
+            ],
+            outputs: [{ name: "remaining", type: "uint256" }],
+            stateMutability: "view",
+        }],
+        functionName: "allowance",
+        args: [wallet, vault],
+    });
+    
+    if (allowance < amount) {
+        throw new MissingAllowanceError();
+    }
+    
     // 4. Check max deposit limit using client.readContract
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#maxdeposit
    
@@ -96,5 +111,5 @@ export async function deposit(
     // 7. Return the transaction object with all required fields
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#deposit
     
-    throw new Error("Not implemented yet - only steps 1-2 done");
+    throw new Error("Not implemented yet - only steps 1-3 done");
 }

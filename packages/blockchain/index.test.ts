@@ -13,6 +13,9 @@ describe("deposit function - step 1", () => {
                 if (params.functionName === "balanceOf") {
                     return 2000000n; // Sufficient balance
                 }
+                if (params.functionName === "allowance") {
+                    return 2000000n; // Sufficient allowance
+                }
                 return 0n;
             }),
             estimateContractGas: mock(async () => 21000n),
@@ -25,7 +28,7 @@ describe("deposit function - step 1", () => {
                 amount: 1000000n,
             });
         } catch (error: any) {
-            expect(error.message).toContain("only steps 1-2 done");
+            expect(error.message).toContain("only steps 1-3 done");
         }
 
         // Verify that readContract was called for asset
@@ -54,6 +57,23 @@ describe("deposit function - step 1", () => {
             functionName: "balanceOf",
             args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
         });
+        
+        // Verify that readContract was called for allowance
+        expect(mockClient.readContract).toHaveBeenCalledWith({
+            address: "0x1234567890123456789012345678901234567890",
+            abi: [{
+                name: "allowance",
+                type: "function",
+                inputs: [
+                    { name: "owner", type: "address" },
+                    { name: "spender", type: "address" },
+                ],
+                outputs: [{ name: "remaining", type: "uint256" }],
+                stateMutability: "view",
+            }],
+            functionName: "allowance",
+            args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0x0987654321098765432109876543210987654321"],
+        });
     });
     
     test("should throw NotEnoughBalanceError when balance is insufficient", async () => {
@@ -77,5 +97,31 @@ describe("deposit function - step 1", () => {
                 amount: 1000000n,
             })
         ).rejects.toThrow("Not enough balance");
+    });
+    
+    test("should throw MissingAllowanceError when allowance is insufficient", async () => {
+        const mockClient = {
+            readContract: mock(async (params: any) => {
+                if (params.functionName === "asset") {
+                    return "0x1234567890123456789012345678901234567890";
+                }
+                if (params.functionName === "balanceOf") {
+                    return 2000000n; // Sufficient balance
+                }
+                if (params.functionName === "allowance") {
+                    return 500000n; // Less than deposit amount
+                }
+                return 0n;
+            }),
+            estimateContractGas: mock(async () => 21000n),
+        };
+
+        await expect(
+            deposit(mockClient as any, {
+                wallet: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                vault: "0x0987654321098765432109876543210987654321",
+                amount: 1000000n,
+            })
+        ).rejects.toThrow("Not enough allowance");
     });
 }); 
