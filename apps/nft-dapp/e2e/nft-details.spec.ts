@@ -18,17 +18,28 @@ test.describe('NFT Details Page E2E Tests', () => {
 
   // Setup environment variables for all tests
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
+    // Set environment variables BEFORE the page loads
+    await page.addInitScript((envVars) => {
+      // Override environment variables before the app loads
       window.ENV_MOCK = {
-        VITE_REOWN_PROJECT_ID: 'test-project-id',
-        VITE_API_BASE_URL: 'https://test-api.example.com',
-        VITE_NFT_CONTRACT_ADDRESS: '0x1234567890123456789012345678901234567890',
-        VITE_ENV: 'test'
+        VITE_REOWN_PROJECT_ID: envVars.VITE_REOWN_PROJECT_ID || 'test-project-id',
+        VITE_API_BASE_URL: envVars.VITE_API_BASE_URL || 'https://test-api.example.com',
+        VITE_NFT_CONTRACT_ADDRESS: envVars.VITE_NFT_CONTRACT_ADDRESS || '0x1234567890123456789012345678901234567890',
+        VITE_ENV: envVars.VITE_ENV || 'test'
       };
+      
+      // Force the app to use our mocked values
+      console.log('Setting ENV_MOCK:', window.ENV_MOCK);
+    }, {
+      VITE_REOWN_PROJECT_ID: process.env.VITE_REOWN_PROJECT_ID,
+      VITE_API_BASE_URL: process.env.VITE_API_BASE_URL,
+      VITE_NFT_CONTRACT_ADDRESS: process.env.VITE_NFT_CONTRACT_ADDRESS,
+      VITE_ENV: process.env.VITE_ENV
     });
 
     // Mock API responses for CI environment
-    await page.route('**/api/nfts**', async route => {
+    await page.route('**/nfts**', async route => {
+      console.log('Mocking API call:', route.request().url());
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -70,9 +81,10 @@ test.describe('NFT Details Page E2E Tests', () => {
     });
 
     // Mock individual NFT API calls
-    await page.route('**/api/nfts/*', async route => {
+    await page.route('**/nfts/*', async route => {
       const url = route.request().url();
       const nftId = url.split('/').pop();
+      console.log('Mocking individual NFT API call:', url, 'NFT ID:', nftId);
       
       await route.fulfill({
         status: 200,
