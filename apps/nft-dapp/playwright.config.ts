@@ -18,13 +18,10 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  // Disable webServer in CI - we'll start it manually in the workflow
-  ...(process.env.CI ? {} : {
-    webServer: {
-      command: 'pnpm dev',
-      url: 'http://localhost:5173',
-      reuseExistingServer: true,
-      timeout: 120 * 1000,
-    },
-  }),
+  webServer: {
+    command: 'pnpm dev',
+    url: 'http://localhost:5173',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+  },
 }); 
