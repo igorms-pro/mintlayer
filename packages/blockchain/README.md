@@ -1,15 +1,14 @@
-# ERC-4626 Deposit Function Library
+# ERC-4626 Deposit Function
 
-A TypeScript library for building and validating ERC-4626 vault deposit transactions. This library provides a complete implementation of the ERC-4626 deposit specification with comprehensive error handling, gas estimation, and validation.
+Builds deposit transactions for ERC-4626 vaults.
 
 ## Features
 
-- **ERC-4626 Compliance**: Full implementation of the ERC-4626 deposit specification
-- **Gas Estimation**: Automatic gas cost estimation for transactions
-- **Comprehensive Validation**: Balance, allowance, and max deposit limit checking
-- **Type Safety**: Full TypeScript support with proper type definitions
-- **Error Handling**: Custom error types for different failure scenarios
-- **Testing**: 100% test coverage with both unit and integration tests
+- ERC-4626 compliance
+- Gas estimation
+- Balance & allowance validation
+- TypeScript support
+- 100% test coverage
 
 ## Testing
 
@@ -29,89 +28,36 @@ bun test --coverage
 bun test index.test.ts
 ```
 
-## Usage
 
-### Basic Usage
+
+
+
+## API
 
 ```typescript
-import { deposit, DepositParams } from '@your-org/blockchain';
-import { createPublicClient, http } from 'viem';
-import { mainnet } from 'viem/chains';
+// Main function
+deposit(client: PublicClient, params: DepositParams): Promise<Transaction>
 
-// Create a viem client
-const client = createPublicClient({
-  chain: mainnet,
-  transport: http()
-});
-
-// Define deposit parameters
-const params: DepositParams = {
-  wallet: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-  vault: '0x5f18C75AbDAe578b483E5F43e12b3B0C0C0C0C0C',
-  amount: 1000000000000000000n // 1 token (18 decimals)
-};
-
-// Build the deposit transaction
-const transaction = await deposit(client, params);
-
-// Send the transaction using your wallet client
-const hash = await walletClient.sendTransaction(transaction);
-console.log('Transaction hash:', hash);
-```
-
-
-
-## API Reference
-
-### Types
-
-#### `DepositParams`
-```typescript
+// Types
 type DepositParams = {
-  wallet: `0x${string}`;  // User's wallet address
-  vault: `0x${string}`;   // ERC-4626 vault address
-  amount: bigint;         // Amount to deposit (in token units)
+  wallet: `0x${string}`;
+  vault: `0x${string}`;
+  amount: bigint;
 };
-```
 
-#### `Transaction`
-```typescript
 type Transaction = {
-  data: `0x${string}`;    // Encoded function call data
-  from: `0x${string}`;    // Sender address
-  to: `0x${string}`;      // Vault address
-  value: bigint;          // ETH value (0 for ERC-4626 deposits)
-  gas: bigint;            // Estimated gas cost
+  data: `0x${string}`;
+  from: `0x${string}`;
+  to: `0x${string}`;
+  value: bigint;
+  gas: bigint;
 };
+
+// Errors
+NotEnoughBalanceError
+MissingAllowanceError  
+AmountExceedsMaxDepositError
 ```
-
-### Functions
-
-#### `deposit(client, params)`
-
-Builds a deposit transaction for an ERC-4626 vault.
-
-**Parameters:**
-- `client: PublicClient` - Viem public client
-- `params: DepositParams` - Deposit parameters
-
-**Returns:** `Promise<Transaction>` - Transaction object ready to be sent
-
-**Throws:**
-- `NotEnoughBalanceError` - When user has insufficient token balance
-- `MissingAllowanceError` - When vault lacks approval to spend tokens
-- `AmountExceedsMaxDepositError` - When amount exceeds vault limits
-
-### Error Classes
-
-#### `NotEnoughBalanceError`
-Thrown when the user doesn't have enough tokens to deposit.
-
-#### `MissingAllowanceError`
-Thrown when the vault doesn't have approval to spend the user's tokens.
-
-#### `AmountExceedsMaxDepositError`
-Thrown when the deposit amount exceeds the vault's maximum deposit limit.
 
 ## Testing
 
