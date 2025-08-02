@@ -6,7 +6,7 @@ A React/TypeScript dApp for viewing and minting ERC1155 NFTs on Base Sepolia tes
 
 - 🖼️ **NFT Gallery**: Browse all available NFTs with beautiful grid layout
 - 🔍 **NFT Details**: View detailed information about each NFT including attributes
-- 👛 **Wallet Integration**: Connect MetaMask or other Web3 wallets
+- 👛 **Wallet Integration**: Connect Web3 wallets
 - 💰 **Balance Display**: View your Base Sepolia ETH balance
 - 🪙 **NFT Minting**: Mint ERC1155 NFTs (demo implementation)
 - 📱 **Responsive Design**: Works on desktop and mobile devices
@@ -33,7 +33,7 @@ A React/TypeScript dApp for viewing and minting ERC1155 NFTs on Base Sepolia tes
 
 - Node.js 18+ 
 - pnpm (recommended) or npm
-- MetaMask or another Web3 wallet extension
+- Web3 wallet extension
 
 ### Installation
 
@@ -57,7 +57,7 @@ pnpm dev
 
 ### Wallet Setup
 
-1. Install MetaMask or another Web3 wallet extension
+1. Install a Web3 wallet extension
 2. Add Base Sepolia testnet to your wallet:
    - Network Name: Base Sepolia
    - RPC URL: https://sepolia.base.org

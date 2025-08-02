@@ -55,6 +55,7 @@ export const MoreCollection: React.FC<MoreCollectionProps> = ({
             key={nft.id}
             onClick={() => handleNFTClick(nft.id)}
             className="cursor-pointer group transition-transform duration-200 hover:scale-105"
+            data-testid="related-nft"
           >
             <div className="aspect-square overflow-hidden bg-gray-100 rounded mb-2">
               <img
