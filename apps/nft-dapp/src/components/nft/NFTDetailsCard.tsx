@@ -96,6 +96,7 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
               loading={mintState.isPending}
               disabled={!canClaim || mintState.isPending}
               className="h-10"
+              data-testid="claim-button"
             >
               {mintState.isPending ? 'Claiming...' : 'Claim Now'}
             </Button>
@@ -118,7 +119,7 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
         )}
         {mintState.isPending && !mintState.isSuccess && (
           <div className="text-sm text-blue-600 text-center">
-            <p>Transaction submitted! Check MetaMask for confirmation...</p>
+            <p>Transaction submitted! Check wallet for confirmation...</p>
             <button 
               onClick={resetMintState}
               className="text-xs text-gray-500 underline mt-1"
@@ -200,6 +201,7 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
             loading={mintState.isPending}
             disabled={!canClaim || mintState.isPending}
             className="w-full"
+            data-testid="claim-button-desktop"
           >
             {mintState.isPending ? 'Claiming...' : 'Claim Now'}
           </Button>
@@ -220,7 +222,7 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
           )}
           {mintState.isPending && !mintState.isSuccess && (
             <div className="text-sm text-blue-600 text-center">
-              <p>Transaction submitted! Check MetaMask for confirmation...</p>
+              <p>Transaction submitted! Check wallet for confirmation...</p>
               <button 
                 onClick={resetMintState}
                 className="text-xs text-gray-500 underline mt-1"
