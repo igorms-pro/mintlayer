@@ -44,10 +44,21 @@ export async function deposit(
     { wallet, vault, amount }: DepositParams,
 ): Promise<Transaction> {
     // TODO: Steps
-    // 1. Get the asset address from the vault using client.readContract
+    // 1. ✅ Get the asset address from the vault using client.readContract
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#asset
-   
-
+    const assetAddress = await client.readContract({
+        address: vault,
+        abi: [{
+            name: "asset",
+            type: "function",
+            inputs: [],
+            outputs: [{ name: "assetTokenAddress", type: "address" }],
+            stateMutability: "view",
+        }],
+        functionName: "asset",
+    });
+    
+    console.log("Asset address:", assetAddress);
 
     // 2. Check user's balance of the asset using client.readContract
     //    - ERC-20 spec: https://eips.ethereum.org/EIPS/eip-20#balanceof
@@ -68,5 +79,5 @@ export async function deposit(
     // 7. Return the transaction object with all required fields
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#deposit
     
-    throw new Error("Not implemented yet");
+    throw new Error("Not implemented yet - only step 1 done");
 }
