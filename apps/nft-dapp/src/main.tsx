@@ -10,6 +10,15 @@ import { config } from './config/wagmi';
 import { Toaster } from 'react-hot-toast';
 import { TOAST_CONFIG } from './config/constants';
 
+// Add error handling for initialization
+window.addEventListener('error', (event) => {
+  console.error('Global error caught:', event.error);
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+});
+
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(

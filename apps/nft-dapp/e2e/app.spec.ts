@@ -56,18 +56,27 @@ test.describe('App.tsx E2E Tests', () => {
 
   test('should handle JavaScript errors gracefully', async ({ page }) => {
     const consoleErrors: string[] = [];
+    const consoleLogs: string[] = [];
     
     page.on('console', msg => {
       if (msg.type() === 'error') {
         consoleErrors.push(msg.text());
+      } else if (msg.type() === 'log') {
+        consoleLogs.push(msg.text());
       }
     });
 
     await page.goto('http://localhost:5173');
     await page.waitForTimeout(2000);
 
-    // Log errors for debugging but don't fail the test
+    // Log everything for debugging
+    console.log('Console logs during E2E test:', consoleLogs);
     console.log('Console errors during E2E test:', consoleErrors);
+    
+    // Check if app loaded
+    const appContainer = page.locator('[data-testid="app-container"]');
+    const isAppLoaded = await appContainer.isVisible();
+    console.log('App container visible:', isAppLoaded);
     
     // Test passes if page loads (even with some errors)
     expect(true).toBeTruthy();
