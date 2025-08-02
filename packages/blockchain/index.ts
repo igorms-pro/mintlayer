@@ -66,7 +66,7 @@ export async function deposit(
             name: "balanceOf",
             type: "function",
             inputs: [{ name: "owner", type: "address" }],
-            outputs: [{ name: "", type: "uint256" }],
+            outputs: [{ name: "balance", type: "uint256" }],
             stateMutability: "view",
         }],
         functionName: "balanceOf",
@@ -101,7 +101,23 @@ export async function deposit(
     
     // 4. Check max deposit limit using client.readContract
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#maxdeposit
-   
+    const maxDeposit = await client.readContract({
+        address: vault,
+        abi: [{
+            name: "maxDeposit",
+            type: "function",
+            inputs: [{ name: "receiver", type: "address" }],
+            outputs: [{ name: "maxAssets", type: "uint256" }],
+            stateMutability: "view",
+        }],
+        functionName: "maxDeposit",
+        args: [wallet],
+    });
+    
+    if (amount > maxDeposit) {
+        throw new AmountExceedsMaxDepositError();
+    }
+    
     // 5. Build the deposit transaction data using encodeFunctionData
     //    - Viem docs: https://viem.sh/docs/contract/encodeFunctionData
    
@@ -111,5 +127,5 @@ export async function deposit(
     // 7. Return the transaction object with all required fields
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#deposit
     
-    throw new Error("Not implemented yet - only steps 1-3 done");
+    throw new Error("Not implemented yet - only steps 1-4 done");
 }
