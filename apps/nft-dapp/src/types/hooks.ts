@@ -1,4 +1,5 @@
 import type { NFT } from './nft';
+import type { AppError } from './errors';
 
 // NFT Hooks Types
 export interface UseNFTsOptions {
@@ -10,14 +11,14 @@ export interface UseNFTsReturn {
   nfts: NFT[];
   isLoading: boolean;
   isError: boolean;
-  error: Error | null;
+  error: AppError | null;
 }
 
 export interface UseNFTReturn {
   nft: NFT | undefined;
   isLoading: boolean;
   isError: boolean;
-  error: Error | null;
+  error: AppError | null;
 }
 
 // Web3 Hooks Types
@@ -26,7 +27,7 @@ export interface MintState {
   isPending: boolean;
   isSuccess: boolean;
   isError: boolean;
-  error: Error | null;
+  error: AppError | null;
   txHash?: string;
 }
 
