@@ -1,5 +1,30 @@
 import { describe, test, expect, mock } from "bun:test";
 import { deposit } from "./index";
+import { erc4626Abi, erc20Abi } from "viem";
+
+// ABI constants for testing (same as in index.ts)
+const ASSET_ABI = [
+    {
+        name: "asset",
+        type: "function",
+        inputs: [],
+        outputs: [{ name: "assetTokenAddress", type: "address" }],
+        stateMutability: "view",
+    },
+] as const;
+
+const DEPOSIT_ABI = [
+    {
+        name: "deposit",
+        type: "function",
+        inputs: [
+            { name: "assets", type: "uint256" },
+            { name: "receiver", type: "address" },
+        ],
+        outputs: [{ name: "shares", type: "uint256" }],
+        stateMutability: "nonpayable",
+    },
+] as const;
 
 describe("deposit function - complete implementation", () => {
     test("should get asset address and validate deposit conditions", async () => {
@@ -38,26 +63,14 @@ describe("deposit function - complete implementation", () => {
         // Verify that readContract was called for asset
         expect(mockClient.readContract).toHaveBeenCalledWith({
             address: "0x0987654321098765432109876543210987654321",
-            abi: [{
-                name: "asset",
-                type: "function",
-                inputs: [],
-                outputs: [{ name: "assetTokenAddress", type: "address" }],
-                stateMutability: "view",
-            }],
+            abi: ASSET_ABI,
             functionName: "asset",
         });
         
         // Verify that readContract was called for balance
         expect(mockClient.readContract).toHaveBeenCalledWith({
             address: "0x1234567890123456789012345678901234567890",
-            abi: [{
-                name: "balanceOf",
-                type: "function",
-                inputs: [{ name: "owner", type: "address" }],
-                outputs: [{ name: "balance", type: "uint256" }],
-                stateMutability: "view",
-            }],
+            abi: erc20Abi,
             functionName: "balanceOf",
             args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
         });
@@ -65,16 +78,7 @@ describe("deposit function - complete implementation", () => {
         // Verify that readContract was called for allowance
         expect(mockClient.readContract).toHaveBeenCalledWith({
             address: "0x1234567890123456789012345678901234567890",
-            abi: [{
-                name: "allowance",
-                type: "function",
-                inputs: [
-                    { name: "owner", type: "address" },
-                    { name: "spender", type: "address" },
-                ],
-                outputs: [{ name: "remaining", type: "uint256" }],
-                stateMutability: "view",
-            }],
+            abi: erc20Abi,
             functionName: "allowance",
             args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0x0987654321098765432109876543210987654321"],
         });
@@ -82,13 +86,7 @@ describe("deposit function - complete implementation", () => {
         // Verify that readContract was called for maxDeposit
         expect(mockClient.readContract).toHaveBeenCalledWith({
             address: "0x0987654321098765432109876543210987654321",
-            abi: [{
-                name: "maxDeposit",
-                type: "function",
-                inputs: [{ name: "receiver", type: "address" }],
-                outputs: [{ name: "maxAssets", type: "uint256" }],
-                stateMutability: "view",
-            }],
+            abi: erc4626Abi,
             functionName: "maxDeposit",
             args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
         });
@@ -96,16 +94,7 @@ describe("deposit function - complete implementation", () => {
         // Verify that estimateContractGas was called correctly
         expect(mockClient.estimateContractGas).toHaveBeenCalledWith({
             address: "0x0987654321098765432109876543210987654321",
-            abi: [{
-                name: "deposit",
-                type: "function",
-                inputs: [
-                    { name: "assets", type: "uint256" },
-                    { name: "receiver", type: "address" },
-                ],
-                outputs: [{ name: "shares", type: "uint256" }],
-                stateMutability: "nonpayable",
-            }],
+            abi: DEPOSIT_ABI,
             functionName: "deposit",
             args: [1000000n, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
             account: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",

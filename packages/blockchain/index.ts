@@ -1,5 +1,5 @@
 import type { PublicClient } from "viem";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, erc4626Abi, erc20Abi } from "viem";
 
 export type DepositParams = {
     wallet: `0x${string}`;
@@ -33,6 +33,30 @@ export class AmountExceedsMaxDepositError extends Error {
     }
 }
 
+// ABI constants for better readability
+const ASSET_ABI = [
+    {
+        name: "asset",
+        type: "function",
+        inputs: [],
+        outputs: [{ name: "assetTokenAddress", type: "address" }],
+        stateMutability: "view",
+    },
+] as const;
+
+const DEPOSIT_ABI = [
+    {
+        name: "deposit",
+        type: "function",
+        inputs: [
+            { name: "assets", type: "uint256" },
+            { name: "receiver", type: "address" },
+        ],
+        outputs: [{ name: "shares", type: "uint256" }],
+        stateMutability: "nonpayable",
+    },
+] as const;
+
 /**
  * Deposit an amount of an asset into a given vault.
  *
@@ -49,13 +73,7 @@ export async function deposit(
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#asset
     const assetAddress = await client.readContract({
         address: vault,
-        abi: [{
-            name: "asset",
-            type: "function",
-            inputs: [],
-            outputs: [{ name: "assetTokenAddress", type: "address" }],
-            stateMutability: "view",
-        }],
+        abi: ASSET_ABI,
         functionName: "asset",
     });
     
@@ -63,13 +81,7 @@ export async function deposit(
     //    - ERC-20 spec: https://eips.ethereum.org/EIPS/eip-20#balanceof
     const balance = await client.readContract({
         address: assetAddress,
-        abi: [{
-            name: "balanceOf",
-            type: "function",
-            inputs: [{ name: "owner", type: "address" }],
-            outputs: [{ name: "balance", type: "uint256" }],
-            stateMutability: "view",
-        }],
+        abi: erc20Abi,
         functionName: "balanceOf",
         args: [wallet],
     });
@@ -82,16 +94,7 @@ export async function deposit(
     //    - ERC-20 spec: https://eips.ethereum.org/EIPS/eip-20#allowance
     const allowance = await client.readContract({
         address: assetAddress,
-        abi: [{
-            name: "allowance",
-            type: "function",
-            inputs: [
-                { name: "owner", type: "address" },
-                { name: "spender", type: "address" },
-            ],
-            outputs: [{ name: "remaining", type: "uint256" }],
-            stateMutability: "view",
-        }],
+        abi: erc20Abi,
         functionName: "allowance",
         args: [wallet, vault],
     });
@@ -104,13 +107,7 @@ export async function deposit(
     //    - ERC-4626 spec: https://eips.ethereum.org/EIPS/eip-4626#maxdeposit
     const maxDeposit = await client.readContract({
         address: vault,
-        abi: [{
-            name: "maxDeposit",
-            type: "function",
-            inputs: [{ name: "receiver", type: "address" }],
-            outputs: [{ name: "maxAssets", type: "uint256" }],
-            stateMutability: "view",
-        }],
+        abi: erc4626Abi,
         functionName: "maxDeposit",
         args: [wallet],
     });
@@ -122,16 +119,7 @@ export async function deposit(
     // 5. Build the deposit transaction data using encodeFunctionData
     //    - Viem docs: https://viem.sh/docs/contract/encodeFunctionData
     const data = encodeFunctionData({
-        abi: [{
-            name: "deposit",
-            type: "function",
-            inputs: [
-                { name: "assets", type: "uint256" },
-                { name: "receiver", type: "address" },
-            ],
-            outputs: [{ name: "shares", type: "uint256" }],
-            stateMutability: "nonpayable",
-        }],
+        abi: DEPOSIT_ABI,
         functionName: "deposit",
         args: [amount, wallet],
     });
@@ -140,16 +128,7 @@ export async function deposit(
     //    - Viem docs: https://viem.sh/docs/contract/estimateContractGas
     const gas = await client.estimateContractGas({
         address: vault,
-        abi: [{
-            name: "deposit",
-            type: "function",
-            inputs: [
-                { name: "assets", type: "uint256" },
-                { name: "receiver", type: "address" },
-            ],
-            outputs: [{ name: "shares", type: "uint256" }],
-            stateMutability: "nonpayable",
-        }],
+        abi: DEPOSIT_ABI,
         functionName: "deposit",
         args: [amount, wallet],
         account: wallet,

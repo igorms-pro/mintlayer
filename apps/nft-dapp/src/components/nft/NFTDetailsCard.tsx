@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
-import { Button, Divider } from '@/components/ui';
+import React from 'react';
+import { Button } from '@/components/ui/Button';
+import { Divider } from '@/components/ui/Divider';
 import { useNFTBalance } from '@/hooks/useNFTBalance';
 import { useClaimStatus } from '@/hooks/useClaimStatus';
 import { useWeb3 } from '@/hooks/useWeb3';
-import toast from 'react-hot-toast';
-import { TOAST_CONFIG } from '@/config/constants';
-import { KilnCard } from './index';
+import { useToastNotifications } from '@/hooks/useToastNotifications';
+import { useBalanceRefetch } from '@/hooks/useBalanceRefetch';
+import { KilnCard } from './KilnCard';
 import type { NFT } from '@/types/nft';
 
 export interface NFTDetailsCardProps {
@@ -22,46 +23,9 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
   const { canClaim, canClaimReason, remainingClaims } = useClaimStatus(nft.id);
   const { mint, mintState, resetMintState } = useWeb3();
 
-  // Handle toast notifications and balance updates based on mint state
-  useEffect(() => {
-    // Transaction submitted
-    if (mintState.isPending && mintState.txHash) {
-      toast('Transaction submitted! Waiting for confirmation...', {
-        icon: '⏳',
-        duration: TOAST_CONFIG.DURATION,
-        id: 'transaction-pending',
-      });
-    }
-    
-    // Transaction confirmed
-    if (mintState.isSuccess) {
-      console.log('Transaction confirmed! Refetching balance...');
-      
-      // Dismiss the pending toast
-      toast.dismiss('transaction-pending');
-      
-      // Add a small delay to ensure blockchain state is updated
-      setTimeout(() => {
-        refetchBalance();
-      }, 1000);
-      
-      toast.success(`Successfully claimed ${nft.metadata.name}!`, {
-        duration: TOAST_CONFIG.DURATION,
-      });
-    }
-    
-    // Transaction failed
-    if (mintState.isError) {
-      // Dismiss the pending toast if it exists
-      toast.dismiss('transaction-pending');
-      
-      toast.error('Transaction cancelled', {
-        duration: TOAST_CONFIG.DURATION,
-      });
-    }
-  }, [mintState.isPending, mintState.isSuccess, mintState.isError, mintState.txHash, refetchBalance, nft.metadata.name]);
-
-
+  // Custom hooks for better separation of concerns
+  useToastNotifications(mintState, nft.metadata.name);
+  useBalanceRefetch(mintState, refetchBalance);
 
   // Handle claim button click
   const handleClaim = async () => {
@@ -70,9 +34,7 @@ export const NFTDetailsCard: React.FC<NFTDetailsCardProps> = ({ nft }) => {
         await mint(nft);
       } catch (error) {
         console.error('Failed to claim NFT:', error);
-        toast.error('Transaction cancelled', {
-          duration: TOAST_CONFIG.DURATION,
-        });
+        // Error handling is now done in useToastNotifications hook
       }
     }
   };

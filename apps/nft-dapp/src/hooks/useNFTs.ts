@@ -1,6 +1,8 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
 import type { NFT } from '@/types/nft';
+import type { AppError } from '@/types/errors';
+import { isAPIError } from '@/types/errors';
 import type {
   UseNFTsOptions,
   UseNFTsReturn,
@@ -14,9 +16,9 @@ import { CACHE_TIMES, NETWORK_CONFIG } from '@/config/constants';
 export const useNFTs = (options: UseNFTsOptions = {}): UseNFTsReturn => {
   const { enabled = true, refetchInterval } = options;
 
-  const query = useQuery({
+  const query = useQuery<NFT[], AppError>({
     queryKey: ['nfts'],
-    queryFn: api.getNFTs,
+    queryFn: (): Promise<NFT[]> => api.getNFTs(),
     enabled,
     refetchInterval,
     // NFT Collection: Metadata rarely changes, but availability does
@@ -24,9 +26,9 @@ export const useNFTs = (options: UseNFTsOptions = {}): UseNFTsReturn => {
     gcTime: CACHE_TIMES.NFT_COLLECTION_GC_TIME,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
-    retry: (failureCount, error) => {
+    retry: (failureCount, error: unknown) => {
       // Don't retry on 4xx errors (client errors)
-      if (error instanceof Error && error.message.includes('4')) {
+      if (isAPIError(error) && error.status >= 400 && error.status < 500) {
         return false;
       }
       return failureCount < NETWORK_CONFIG.MAX_RETRIES;
@@ -52,9 +54,14 @@ export const useNFTs = (options: UseNFTsOptions = {}): UseNFTsReturn => {
 export const useNFT = (id: string | undefined): UseNFTReturn => {
   const queryClient = useQueryClient();
 
-  const query = useQuery({
+  const query = useQuery<NFT, AppError>({
     queryKey: ['nft', id] as const,
-    queryFn: () => api.getNFT(id!),
+    queryFn: (): Promise<NFT> => {
+      if (!id) {
+        throw new Error('NFT ID is required');
+      }
+      return api.getNFT(id);
+    },
     enabled: !!id,
     staleTime: CACHE_TIMES.NFT_DETAILS_STALE_TIME,
     gcTime: CACHE_TIMES.NFT_DETAILS_GC_TIME,
@@ -64,8 +71,8 @@ export const useNFT = (id: string | undefined): UseNFTReturn => {
       const nfts = queryClient.getQueryData<NFT[]>(['nfts']);
       return nfts?.find((nft) => nft.id === id);
     },
-    retry: (failureCount, error) => {
-      if (error instanceof Error && error.message.includes('4')) {
+    retry: (failureCount, error: unknown) => {
+      if (isAPIError(error) && error.status >= 400 && error.status < 500) {
         return false;
       }
       return failureCount < 3;
